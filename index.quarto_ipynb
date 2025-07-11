@@ -1,0 +1,1947 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"The Happiness-Despair Nexus: Global Trends and Insights\"\n",
+        "author: \"Adijat Adenaike\"\n",
+        "format: dashboard\n",
+        "theme: yeti\n",
+        "---"
+      ],
+      "id": "2b69430f"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import pandas as pd\n",
+        "import plotly.express as px\n",
+        "import plotly.graph_objects as go\n",
+        "import itables\n",
+        "import numpy as np\n",
+        "import country_converter as cc\n",
+        "from functools import reduce"
+      ],
+      "id": "b9acf77f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# happiness_score dataset\n",
+        "happiness_data = pd.read_csv(\"data\\hapiscore_whr.csv\")\n",
+        "\n",
+        "happiness_data"
+      ],
+      "id": "1e6e39f8",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# changing dataset to a long format\n",
+        "happiness_data_long = happiness_data.melt(id_vars=\"country\")\n",
+        "happiness_data_long"
+      ],
+      "id": "bdd0b995",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# changing to representative column names\n",
+        "happiness_data_long = happiness_data.melt(id_vars=\"country\", var_name=\"year\", value_name = \"percent_happiness\").sort_values([\"country\", \"year\"])\n",
+        "\n",
+        "happiness_data_long"
+      ],
+      "id": "c36ad517",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# checking datatype\n",
+        "happiness_data_long.dtypes"
+      ],
+      "id": "954f6b5f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# converting the 'year' column to integer type, and coercing errors to NaN\n",
+        "happiness_data_long['year'] = pd.to_numeric(happiness_data_long['year'], errors='coerce')\n",
+        "\n",
+        "# Confirm the conversion\n",
+        "print(happiness_data_long['year'].dtype)"
+      ],
+      "id": "428c1278",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# filtering for year 2017 to 2022\n",
+        "happiness_data_long = happiness_data_long[\n",
+        "    (happiness_data_long['year'] >= 2017) & (happiness_data_long['year'] <= 2022)\n",
+        "]\n",
+        "\n",
+        "# Check the result\n",
+        "print(happiness_data_long['year'].unique())\n",
+        "print(happiness_data_long[\"country\"].unique())\n",
+        "print(happiness_data_long.shape)"
+      ],
+      "id": "1e78c1f6",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# Updating rows where 'country' equals 'UAE'\n",
+        "happiness_data_long.loc[happiness_data_long['country'] == 'UAE', 'country'] = 'United Arab Emirates'\n",
+        "\n",
+        "# Verify the change\n",
+        "print(happiness_data_long['country'].unique())"
+      ],
+      "id": "9eb10826",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "\n",
+        "# converting country names to ISO3 codes\n",
+        "happiness_data_long[\"country_code\"] = cc.convert(happiness_data_long[\"country\"], to=\"ISO3\")\n",
+        "\n",
+        "print(happiness_data_long.head())\n",
+        "print(f\"Shape after dropping invalid countries: {happiness_data_long.shape}\")"
+      ],
+      "id": "0312bc49",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# suicide_rate dataset\n",
+        "suicide_rate = pd.read_csv(\"data\\suicide_rate_data.csv\")\n",
+        "\n",
+        "suicide_rate"
+      ],
+      "id": "8bf8feef",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# selecting applicable columns\n",
+        "suicide_rate_subset = suicide_rate [[\"Reference area\", \"Sex\", \"TIME_PERIOD\", \"OBS_VALUE\"]]\n",
+        "\n",
+        "suicide_rate_subset"
+      ],
+      "id": "60db661a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# changing to representative column names\n",
+        "suicide_rate_subset = suicide_rate_subset.rename(columns={\"Reference area\": \"country\", \"Sex\": \"sex\", \"TIME_PERIOD\": \"year\", \"OBS_VALUE\": \"mortality_count\"})\n",
+        "\n",
+        "suicide_rate_subset = suicide_rate_subset.sort_values([\"country\", \"year\"])\n",
+        "\n",
+        "suicide_rate_subset"
+      ],
+      "id": "5f216279",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# dropping rows with 'OECD' or 'European Union' in the 'country' column \n",
+        "# as only interested in single country names\n",
+        "suicide_rate_subset = suicide_rate_subset[\n",
+        "    ~suicide_rate_subset['country'].str.contains(\"OECD|European Union\", case=False, na=False,regex=True)\n",
+        "]\n",
+        "\n",
+        "\n",
+        "print(suicide_rate_subset['country'].unique())\n",
+        "print(f\"Shape after dropping OECD and European Union rows: {suicide_rate_subset.shape}\")"
+      ],
+      "id": "efd8ce7c",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# filtering for year 2017 to 2022\n",
+        "suicide_rate_subset = suicide_rate_subset[\n",
+        "    (suicide_rate_subset['year'] >= 2017) & (suicide_rate_subset['year'] <= 2022)\n",
+        "]\n",
+        "\n",
+        "\n",
+        "print(suicide_rate_subset['year'].unique())\n",
+        "print(suicide_rate_subset[\"country\"].unique())\n",
+        "print(suicide_rate_subset.shape)"
+      ],
+      "id": "bbdea4fc",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# dropping missing value from dataset\n",
+        "happiness_data_long.dropna(inplace=True)"
+      ],
+      "id": "c976c3c6",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "\n",
+        "# unique number of countries in happiness dataset\n",
+        "happy_countries = happiness_data_long[\"country\"].nunique()\n",
+        "\n",
+        "happy_countries"
+      ],
+      "id": "93feee89",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "happiness_data_long.to_csv('happiness_score.csv', index=False)"
+      ],
+      "id": "1544cd1d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# creating a pivoted version of the 'suicide_rate_subset' dataFrame \n",
+        "# to analyze mortality rates by sex (Male, Female, Total)\n",
+        "# without modifying the original 'suicide_rate_subset\n",
+        "# pivoting the data so each sex becomes its own column\n",
+        "suicide_rate_pivot = suicide_rate_subset.pivot_table(\n",
+        "    index=['country', 'year'],\n",
+        "    columns='sex',\n",
+        "    values='mortality_count',\n",
+        "    aggfunc='sum'  # aggregating if duplicates exist\n",
+        ").reset_index()\n",
+        "\n",
+        "# renaming the columns for clarity\n",
+        "suicide_rate_pivot.columns.name = None  # removing column index name\n",
+        "suicide_rate_pivot = suicide_rate_pivot.rename(columns={\n",
+        "    'Male': 'mortality_male',\n",
+        "    'Female': 'mortality_female',\n",
+        "    'Total': 'mortality_total'\n",
+        "})\n",
+        "\n",
+        "suicide_rate_pivot[\"country_code\"]  = cc.convert(suicide_rate_pivot[\"country\"], to=\"ISO3\")\n",
+        "\n",
+        "# cleaned dataset\n",
+        "suicide_rate_pivot.head()"
+      ],
+      "id": "44a8f8ac",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# unique number of countries in happiness dataset\n",
+        "suic_country_count = suicide_rate_pivot[\"country\"].nunique()\n",
+        "\n",
+        "suic_country_count"
+      ],
+      "id": "7efee7d4",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "suicide_rate_pivot.to_csv('suicide_rate.csv', index=False)"
+      ],
+      "id": "0525b76a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# filtering to keep only the  rows with 'Total' values\n",
+        "suicide_rate_filtered = suicide_rate_subset[suicide_rate_subset[\"sex\"] == \"Total\"]\n",
+        "\n",
+        "suicide_rate_filtered"
+      ],
+      "id": "489656d5",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# dropping the 'sex' column as it's no longer needed\n",
+        "suicide_rate_filtered = suicide_rate_filtered.drop(columns=[\"sex\"]).sort_values([\"country\", \"year\"])\n",
+        "\n",
+        "suicide_rate_filtered.head()"
+      ],
+      "id": "e3761eb6",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "suicide_rate_filtered [\"country_code\"] = cc.convert(suicide_rate_filtered [\"country\"], to=\"ISO3\")\n",
+        "\n",
+        "print(suicide_rate_filtered .head())\n",
+        "print(f\"New shape of the DataFrame: {suicide_rate_filtered.shape}\")"
+      ],
+      "id": "a96d7980",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "print(happiness_data_long.shape)\n",
+        "print(suicide_rate_filtered.shape)\n",
+        "print(suicide_rate_pivot.shape)"
+      ],
+      "id": "67bdcec4",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# joining suicide_rate with happiness on 'country_code' and 'year'\n",
+        "data_frames = [suicide_rate_filtered, \n",
+        "    happiness_data_long]\n",
+        "df_merged = reduce(lambda left, right: pd.merge(left, right,  on=['country_code','year'],\n",
+        "    how='inner'), data_frames)\n",
+        "\n",
+        "# replacing missing values\n",
+        "# replacing NaN with 'Unknown' for object (string) columns\n",
+        "for col in df_merged.select_dtypes(include='object').columns:\n",
+        "    df_merged[col].fillna('Unknown', inplace=True)\n",
+        "\n",
+        "# replacing NaN with -1 for numeric columns\n",
+        "for col in df_merged.select_dtypes(include='number').columns:\n",
+        "    df_merged[col].fillna(-1, inplace=True)\n",
+        "\n",
+        "df_merged.head(20)"
+      ],
+      "id": "c09406f5",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "df_merged = df_merged.drop(columns=\"country_x\")\n",
+        "df_merged.rename(columns={\"country_y\": \"country\"}, inplace=True)\n",
+        "df_merged.head(5)"
+      ],
+      "id": "7404e9a0",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# rearranging columns in a more intuitive order\n",
+        "column_order = ['country_code', 'country', 'year', 'percent_happiness', 'mortality_count', 'percent_internet_household']\n",
+        "if set(column_order).issubset(df_merged.columns):\n",
+        "    df_merged = df_merged[column_order]\n",
+        "\n",
+        "# Check the data types\n",
+        "df_merged"
+      ],
+      "id": "924a95a4",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "df_merged.to_csv('final_merged.csv', index=False)"
+      ],
+      "id": "802bf328",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# Rising and Falling Joy: A Global Perspective on Happiness\n"
+      ],
+      "id": "41db9718"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# 1. Global Average Happiness\n",
+        "global_avg_happiness = happiness_data_long[\"percent_happiness\"].mean()\n",
+        "print(f\"{global_avg_happiness:.1f}%.\")\n",
+        "\n",
+        "# 2. Happiest Year Globally\n",
+        "happiest_year = (\n",
+        "    happiness_data_long.groupby(\"year\")[\"percent_happiness\"].mean()\n",
+        "    .idxmax()\n",
+        ")\n",
+        "happiest_year_avg = (\n",
+        "    happiness_data_long.groupby(\"year\")[\"percent_happiness\"].mean()\n",
+        "    .max()\n",
+        ")\n",
+        "print(f\"The happiest year globally was {happiest_year}, with an average happiness of {happiest_year_avg:.1f}%.\")\n",
+        "\n",
+        "# 3. Most Stable Performer\n",
+        "country_variability = (\n",
+        "    happiness_data_long.groupby(\"country\")[\"percent_happiness\"].std()\n",
+        ")\n",
+        "most_stable_country = country_variability.idxmin()\n",
+        "least_variability = country_variability.min()\n",
+        "print(f\"The most stable performer was {most_stable_country}, with a variability of ±{least_variability:.1f}%.\")\n",
+        "\n",
+        "# 4. Global Happiness Gap\n",
+        "happiest_country_avg = (\n",
+        "    happiness_data_long.groupby(\"country\")[\"percent_happiness\"].mean()\n",
+        "    .max()\n",
+        ")\n",
+        "least_happy_country_avg = (\n",
+        "    happiness_data_long.groupby(\"country\")[\"percent_happiness\"].mean()\n",
+        "    .min()\n",
+        ")\n",
+        "happiness_gap = happiest_country_avg - least_happy_country_avg\n",
+        "print(f\"The global happiness gap is {happiness_gap:.1f} percentage points.\")"
+      ],
+      "id": "c6f30de0",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "##  {.sidebar}\n",
+        "\n",
+        "::: {.callout-tip collapse=\"true\"}\n",
+        "### Key Insights\n",
+        "\n",
+        "-   **Countries Represented in Analysis**: The happiness score dataset spans 152 countries, offering a comprehensive view of global happiness trends over six years (2017–2022).\n",
+        "-   **Global Average Happiness**: The average global happiness score during this period is 55.6%, reflecting the overall sentiment and satisfaction worldwide.\n",
+        "-   **Happiest Country's Average**: The country with the highest happiness score maintains an impressive average of 78.1%, showcasing notable consistency in well-being.\n",
+        "-   **Happiest Year**: The year 2020 stands out as the happiest year globally, likely influenced by unique social and cultural dynamics during the pandemic.\n",
+        "-   **Happiness Gap**: A 55.2% gap highlights the stark disparities in happiness levels between the happiest and least happy nations, emphasizing global inequality in well-being.\n",
+        ":::\n",
+        "\n",
+        "## {height = \"10%\"}\n",
+        "\n",
+        "### \n",
+        "\n",
+        "::: {.valuebox title=\"Countries Represented in Analysis\" icon=\"globe\" color=\"primary\"}\n",
+        "`{python} happy_countries`\n",
+        ":::\n",
+        "\n",
+        "::: {.valuebox title=\"Global Avg Happiness\" icon=\"emoji-smile\" color=\"#d4af37\"}\n",
+        "`{python} str(global_avg_happiness.round(1))`%\n",
+        ":::\n",
+        "\n",
+        "::: {.valuebox title=\"Happiest Country Avg\" icon=\"trophy\" color=\"#d4af37\"}\n",
+        "`{python} str(happiest_country_avg.round(1))`%\n",
+        ":::\n",
+        "\n",
+        "::: {.valuebox title=\"Happiest Year\" icon=\"calendar2-heart\" color=\"#d4af37\"}\n",
+        "`{python} str(happiest_year)`\n",
+        ":::\n",
+        "\n",
+        "::: {.valuebox title=\"Happiness Gap\" icon=\"bar-chart\" color=\"primary\"}\n",
+        "`{python} str(happiness_gap.round(1))`%\n",
+        ":::\n"
+      ],
+      "id": "6092eeb7"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# top 10 countries overall based on maximum percent_happiness\n",
+        "top_countries_overall = df_merged.groupby(\"country\")[\"percent_happiness\"].max().nlargest(10).index\n",
+        "\n",
+        "# filtering data to include only these countries across all years\n",
+        "consistent_top_countries = df_merged[df_merged[\"country\"].isin(top_countries_overall)]\n",
+        "\n",
+        "# bar chart\n",
+        "fig = px.bar(\n",
+        "    consistent_top_countries,\n",
+        "    x=\"country_code\",\n",
+        "    y=\"percent_happiness\",\n",
+        "    color=\"year\",\n",
+        "    labels={\"percent_happiness\": \"Happiness Score (%)\", \"country_code\": \"ISO3\"},\n",
+        "    text=\"percent_happiness\"\n",
+        ")\n",
+        "\n",
+        "fig.update_traces(texttemplate='%{text}', textposition='inside')\n",
+        "fig.update_layout(\n",
+        "    xaxis_title=\"Finland Dominates Happiness Rankings; Canada Shines in 9th place at 74.2%!\",\n",
+        "    yaxis_title=\"Percent Happiness\",\n",
+        "    showlegend=True\n",
+        ")\n",
+        "\n",
+        "fig.show()\n",
+        "\n",
+        "\n",
+        "# calculating the highest scoring country and its score\n",
+        "highest_country = consistent_top_countries.groupby(\"country\")[\"percent_happiness\"].max().idxmax()\n",
+        "highest_score = consistent_top_countries.groupby(\"country\")[\"percent_happiness\"].max().max()\n",
+        "\n",
+        "# calculating Canada's ranking\n",
+        "country_scores = consistent_top_countries.groupby(\"country\")[\"percent_happiness\"].max()\n",
+        "ranked_countries = country_scores.sort_values(ascending=False).reset_index()\n",
+        "canada_rank = ranked_countries[ranked_countries[\"country\"] == \"Canada\"].index[0] + 1\n",
+        "canada_score = country_scores[\"Canada\"]\n",
+        "\n",
+        "\n",
+        "output = (\n",
+        "    f\"For 5 Years Straight, {highest_country} Tops the Global Happiness Chart at {highest_score:.1f}% while Canada Proudly Ranks {canada_rank}th at {canada_score:.1f}%\"\n",
+        ")\n",
+        "print(output)"
+      ],
+      "id": "2457679d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Row {height=\"45%\"}\n",
+        "\n",
+        "####  {width=\"60%\"}\n",
+        "\n",
+        "::: {.card title=\"From Blue to Gold: Tracking Happiness Among the Top 10 Countries\"}"
+      ],
+      "id": "2e227456"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "fig.show()"
+      ],
+      "id": "a2031b80",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::\n"
+      ],
+      "id": "bd466efa"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "\n",
+        "# calculating global average happiness per year\n",
+        "global_trends = happiness_data_long.groupby(\"year\")[\"percent_happiness\"].mean().reset_index()\n",
+        "\n",
+        "# line chart\n",
+        "line_fig = px.line(\n",
+        "    global_trends,\n",
+        "    x=\"year\",\n",
+        "    y=\"percent_happiness\",\n",
+        "    labels={\"percent_happiness\": \"Avg Happiness Score (%)\", \"year\": \"Year\"},\n",
+        "    markers=True\n",
+        ")\n",
+        "\n",
+        "# annotating key events (e.g., pandemic in 2020)\n",
+        "line_fig.add_annotation(\n",
+        "    x=2020,\n",
+        "    y=global_trends.loc[global_trends[\"year\"] == 2020, \"percent_happiness\"].values[0],\n",
+        "    text=\"Pandemic Impact\",\n",
+        "    showarrow=True,\n",
+        "    arrowhead=2,\n",
+        "    ax=-40,\n",
+        "    ay=-40\n",
+        ")\n",
+        "\n",
+        "line_fig.show()"
+      ],
+      "id": "befe3e7f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "####  {.tabset width=\"40%\"}\n",
+        "\n",
+        "::: {.card title=\"Happiness Peaked: A Pandemic Tale of Resilience and Decline\"}"
+      ],
+      "id": "3e7529a3"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "line_fig.show()"
+      ],
+      "id": "111da3d7",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::\n",
+        "\n",
+        "::: {.card title=\"Key Insight\"}\n",
+        "The line chart visualizes the global average happiness trend from 2017 to 2022. It shows a steady rise in happiness from 2017 to 2020, peaking during the pandemic year at 57.5%. While this might seem counterintuitive, it reflects resilience in high-ranking nations like Finland and Denmark, which helped maintain high global averages. After 2020, a noticeable decline highlights the longer-term impacts of the pandemic, economic challenges, and global uncertainty. This visual emphasizes how global averages can mask country-specific variations, making it essential to analyze individual trends for a deeper understanding.\n",
+        ":::\n"
+      ],
+      "id": "1b9cef4f"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "\n",
+        "# calculating variability for each country\n",
+        "country_variability = happiness_data_long.groupby(\"country\")[\"percent_happiness\"].std()\n",
+        "\n",
+        "# most stable performer\n",
+        "most_stable_country = country_variability.idxmin()\n",
+        "least_variability = country_variability.min()\n",
+        "\n",
+        "# result\n",
+        "print(f\"The most stable performer was {most_stable_country}, with a variability of ±{least_variability:.1f}%.\")\n",
+        "\n",
+        "# DataFrame for visualization\n",
+        "variability_df = country_variability.reset_index().rename(columns={\"percent_happiness\": \"variability\"})\n",
+        "\n",
+        "# sorting the data by variability\n",
+        "variability_df = variability_df.sort_values(by=\"variability\")\n",
+        "\n",
+        "# line chart\n",
+        "scatter_fig = px.line(\n",
+        "    variability_df,\n",
+        "    x=\"variability\",\n",
+        "    y=\"country\",\n",
+        "    title=\"Happiness Variability by Country\",\n",
+        "    labels={\"variability\": \"Variability (Standard Deviation)\", \"country\": \"Country\"},\n",
+        "    markers=True,\n",
+        "    color_discrete_sequence=[\"blue\"],\n",
+        ")\n",
+        "\n",
+        "# highlighting the most stable performer\n",
+        "scatter_fig.add_scatter(\n",
+        "    x=[least_variability],\n",
+        "    y=[most_stable_country],\n",
+        "    mode=\"markers+text\",\n",
+        "    text=[f\"Most Stable Country: {most_stable_country} with a variability of ±{least_variability:.1f}%\"],\n",
+        "    marker=dict(size=10, color=\"red\"),\n",
+        "    textposition=\"bottom right\"\n",
+        ")\n",
+        "\n",
+        "scatter_fig.show()"
+      ],
+      "id": "d75f3703",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "###  {height=\"45%\"}\n",
+        "\n",
+        "####  {width=\"60%\"}\n",
+        "\n",
+        "::: {.card title=\"Stability at a Cost: Exploring Happiness at Rock Bottom\"}"
+      ],
+      "id": "0dd1a079"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "scatter_fig.show()"
+      ],
+      "id": "15092a8c",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::\n"
+      ],
+      "id": "3c1e8e32"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "\n",
+        "# creating a DataFrame for variability\n",
+        "variability_df = country_variability.reset_index().rename(columns={\"percent_happiness\": \"variability\"})\n",
+        "\n",
+        "# sorting the data by variability\n",
+        "variability_df = variability_df.sort_values(by=\"variability\").reset_index(drop=True)\n",
+        "\n",
+        "# add a ranking column for variability\n",
+        "variability_df[\"Variability Rank\"] = variability_df.index + 1\n",
+        "\n",
+        "# calculating mean happiness score for each country\n",
+        "average_happiness = happiness_data_long.groupby(\"country\")[\"percent_happiness\"].mean()\n",
+        "\n",
+        "# merging average happiness scores with variability DataFrame\n",
+        "variability_df = variability_df.merge(average_happiness.reset_index(), on=\"country\")\n",
+        "variability_df = variability_df.rename(columns={\"percent_happiness\": \"average_happiness\"})\n",
+        "\n",
+        "# adding a ranking column for happiness score\n",
+        "variability_df = variability_df.sort_values(by=\"average_happiness\", ascending=False).reset_index(drop=True)\n",
+        "variability_df[\"Happiness Rank\"] = variability_df.index + 1\n",
+        "\n",
+        "# extracting the top 10 most consistent countries by variability\n",
+        "top_10_consistent = variability_df.nsmallest(10, \"variability\")\n",
+        "\n",
+        "# top 10 table for reference\n",
+        "print(\"\\nTop 10 Most Consistent Countries:\")\n",
+        "print(top_10_consistent[[\"country\", \"variability\", \"average_happiness\", \"Variability Rank\", \"Happiness Rank\"]])"
+      ],
+      "id": "36287619",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# extracting the top 10 most consistent countries by variability\n",
+        "top_10_consistent = variability_df.nsmallest(10, \"variability\")\n",
+        "\n",
+        "# defining cell colors for gradient effect\n",
+        "variability_colors = [\n",
+        "    f\"rgba({255-int(value*45)}, {255-int(value*15)}, 255, 0.8)\"\n",
+        "    for value in top_10_consistent[\"variability\"]\n",
+        "]\n",
+        "happiness_colors = [\n",
+        "    f\"rgba(255, {255-int(value)}, 150, 0.8)\"\n",
+        "    for value in top_10_consistent[\"average_happiness\"]\n",
+        "]\n",
+        "rank_colors = [\n",
+        "    f\"rgba({255-int(value*25)}, {255-int(value*15)}, 255, 0.8)\"\n",
+        "    for value in top_10_consistent[\"Variability Rank\"]\n",
+        "]\n",
+        "\n",
+        "# creating a styled table with colors\n",
+        "fig_top_10_table = go.Figure(\n",
+        "    data=[\n",
+        "        go.Table(\n",
+        "            header=dict(\n",
+        "                values=[\n",
+        "                    \"Country\",\n",
+        "                    \"Variability (Standard Deviation)\",\n",
+        "                    \"Average Happiness Score\",\n",
+        "                    \"Variability Rank\",\n",
+        "                    \"Happiness Rank\",\n",
+        "                ],\n",
+        "                fill_color=\"lightblue\",\n",
+        "                align=\"left\",\n",
+        "                font=dict(size=12, color=\"black\"),\n",
+        "            ),\n",
+        "            cells=dict(\n",
+        "                values=[\n",
+        "                    top_10_consistent[\"country\"],\n",
+        "                    top_10_consistent[\"variability\"].round(1),\n",
+        "                    top_10_consistent[\"average_happiness\"].round(1),\n",
+        "                    top_10_consistent[\"Variability Rank\"],\n",
+        "                    top_10_consistent[\"Happiness Rank\"],\n",
+        "                ],\n",
+        "                fill_color=[\n",
+        "                    [\"white\"] * len(top_10_consistent),  \n",
+        "                    variability_colors,  \n",
+        "                    happiness_colors,  \n",
+        "                    rank_colors, \n",
+        "                    [\"white\"] * len(top_10_consistent),  \n",
+        "                ],\n",
+        "                align=\"left\",\n",
+        "                font=dict(size=11, color=\"black\"),\n",
+        "            ),\n",
+        "        )\n",
+        "    ]\n",
+        ")\n",
+        "\n",
+        "fig_top_10_table.show()"
+      ],
+      "id": "85217ce5",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "#### \n",
+        "\n",
+        "::: {.card title=\"Global Happiness Stability: When Consistency Masks Contrasting Realities\"}"
+      ],
+      "id": "1ca7bab3"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "fig_top_10_table.show()"
+      ],
+      "id": "0485bc6d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::\n",
+        "\n",
+        "\n",
+        "# Shadows of Despair: A Global Suicide Perspective\n"
+      ],
+      "id": "8e97e858"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "global_avg_suicide_mortality = suicide_rate_pivot[\"mortality_total\"].mean()\n",
+        "global_avg_suicide_mortality\n",
+        "\n",
+        "average_by_year = suicide_rate_pivot.groupby('year')['mortality_total'].mean()\n",
+        "\n",
+        "# Highest Suicide Mortality Year Globally\n",
+        "year_with_highest_rate =  suicide_rate_pivot.groupby('year')['mortality_total'].mean().idxmax()\n",
+        "\n",
+        "highest_avg_rate = average_by_year.max()\n",
+        "year_with_lowest_rate = average_by_year.idxmin()\n",
+        "lowest_avg_rate = average_by_year.min()\n",
+        "\n",
+        "print(f\"Year with Highest Average Suicide Mortality Rate: {year_with_highest_rate}\")\n",
+        "print(f\"Average Mortality Rate for that Year: {highest_avg_rate:.2f} per 100,000 people\")\n",
+        "print(f\"Year with Lowest Average Suicide Mortality Rate: {year_with_lowest_rate}\")\n",
+        "print(f\"Average Mortality Rate for that Year: {lowest_avg_rate:.2f} per 100,000 people\")"
+      ],
+      "id": "e7764a86",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "##  {.sidebar}\n",
+        "\n",
+        "::: {.callout-tip collapse=\"true\"}\n",
+        "### Key Insights\n",
+        "\n",
+        "-   **Countries Represented in Analysis**: The dataset spans 46 countries, providing a comprehensive view of global suicide trends over six years (2017–2022).\n",
+        "-   **Global Average Suicide Rate**: The average suicide rate during this period is 10.7 per 100,000 people, offering a standardized measure for cross-country comparison.\n",
+        "-   **Year with Highest Rate**: 2022 recorded the highest global suicide rate within the analyzed timeframe.\n",
+        "-   **Year with Lowest Rate**: 2018 had the lowest global suicide rate during the period of analysis.\n",
+        "-   **Male-to-Female Suicide Ratio**: 3.7:1 - Men are nearly 3.7 times more likely to die by suicide than women, highlighting a persistent gender disparity in suicide rates.\n",
+        ":::\n",
+        "\n",
+        "##  {height=\"10%\"}\n",
+        "\n",
+        "### \n",
+        "\n",
+        "::: {.valuebox title=\"Countries Represented in Analysis\" icon=\"globe2\" color=\"primary\"}\n",
+        "`{python} suic_country_count`\n",
+        ":::\n",
+        "\n",
+        "::: {.valuebox title=\"Global Avg Suicide Rate\" icon=\"graph-up\" color=\"primary\"}\n",
+        "`{python} str(global_avg_suicide_mortality.round(1))`\n",
+        ":::\n",
+        "\n",
+        "::: {.valuebox title=\"Year with Highest Rate\" icon=\"exclamation-octagon\" color=\"danger\"}\n",
+        "`{python} str(year_with_highest_rate)`\n",
+        ":::\n",
+        "\n",
+        "::: {.valuebox title=\"Year with Lowest Rate\" icon=\"stars\" color=\"success\"}\n",
+        "`{python} str(year_with_lowest_rate)`\n",
+        ":::\n"
+      ],
+      "id": "2ea79ddd"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# global average mortality rates for males and females\n",
+        "global_avg_male = suicide_rate_pivot['mortality_male'].mean()\n",
+        "global_avg_female = suicide_rate_pivot['mortality_female'].mean()\n",
+        "\n",
+        "# male-to-female ratio\n",
+        "male_to_female_ratio = global_avg_male / global_avg_female\n",
+        "\n",
+        "# formating the ratio as X:1\n",
+        "formatted_ratio = f\"{male_to_female_ratio:.1f}:1\"\n",
+        "\n",
+        "\n",
+        "print(f\"Global Male-to-Female Suicide Mortality Ratio: {formatted_ratio}\")"
+      ],
+      "id": "9e581a6f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.valuebox title=\"Staggering Male Suicide Disparity\" icon=\"people\" color=\"danger\"} \n",
+        "`{python} formatted_ratio` \n",
+        ":::\n",
+        "\n",
+        "### \n",
+        "####  {width=\"60%\"}\n"
+      ],
+      "id": "ddde5782"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# reshaping data for gender-specific visualization\n",
+        "suicide_rate_long = suicide_rate_pivot.melt(\n",
+        "    id_vars=[\"country\", \"year\", \"country_code\"],\n",
+        "    value_vars=[\"mortality_female\", \"mortality_male\", \"mortality_total\"],\n",
+        "    var_name=\"gender\",\n",
+        "    value_name=\"mortality_rate\"\n",
+        ")\n",
+        "\n",
+        "# mapping gender column to readable labels\n",
+        "suicide_rate_long[\"gender\"] = suicide_rate_long[\"gender\"].map({\n",
+        "    \"mortality_female\": \"Female\",\n",
+        "    \"mortality_male\": \"Male\",\n",
+        "    \"mortality_total\": \"Total\"\n",
+        "})\n",
+        "\n",
+        "fig_map = px.choropleth(\n",
+        "    suicide_rate_long,\n",
+        "    locations=\"country_code\",            \n",
+        "    color=\"mortality_rate\",           \n",
+        "    hover_name=\"country\", \n",
+        "    hover_data=\"gender\",\n",
+        "    animation_frame=\"year\",  \n",
+        "    color_continuous_scale=\"Viridis\",     \n",
+        "    labels={\"mortality_rate\": \"Suicide Rate (per 100k)\"}, \n",
+        ")\n",
+        "\n",
+        "fig_map.update_layout(\n",
+        "    geo=dict(\n",
+        "        showframe=False,\n",
+        "        showcoastlines=True,\n",
+        "        projection_type=\"natural earth\" \n",
+        " ),\n",
+        "    coloraxis_colorbar=dict(\n",
+        "        tickmode=\"array\",\n",
+        "        tickvals=list(range(1, int(suicide_rate_long[\"mortality_rate\"].max()) + 5, 5)),\n",
+        "        ticktext=[str(i) for i in range(1, int(suicide_rate_long[\"mortality_rate\"].max()) + 5, 5)],\n",
+        "        title=\"Suicide Rate (per 100k)\"\n",
+        "    )\n",
+        "\n",
+        ")\n",
+        "\n",
+        "fig_map.show()"
+      ],
+      "id": "6f86d6f1",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.card title=\"Shadows Across Borders: Mapping Global Suicide Trends\"}"
+      ],
+      "id": "4ae2ce4c"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "fig_map.show()"
+      ],
+      "id": "94c7c45b",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::\n"
+      ],
+      "id": "d6d48650"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# filtering the dataset for the pandemic years (2020 and 2021)\n",
+        "pandemic_data = suicide_rate_long[\n",
+        "    suicide_rate_long[\"year\"].isin([2020, 2021])\n",
+        "]\n",
+        "\n",
+        "# calculating the average suicide rate\n",
+        "pandemic_avg_rate = (\n",
+        "    pandemic_data.groupby(\"gender\", as_index=False)[\"mortality_rate\"]\n",
+        "    .mean()\n",
+        "    .rename(columns={\"mortality_rate\": \"avg_mortality_rate\"})\n",
+        ")\n",
+        "\n",
+        "# calculated averages\n",
+        "print(pandemic_avg_rate)\n",
+        "\n",
+        "pand_fig_bar = px.bar(\n",
+        "    pandemic_avg_rate,\n",
+        "    x=\"gender\",\n",
+        "    y=\"avg_mortality_rate\",\n",
+        "    color=\"avg_mortality_rate\", \n",
+        "    text=\"avg_mortality_rate\",\n",
+        "    labels={\"avg_mortality_rate\": \"Average Suicide Rate (per 100k)\", \"gender\": \"Gender\"},\n",
+        "    color_continuous_scale=\"Blues\" \n",
+        ")\n",
+        "\n",
+        "pand_fig_bar.update_traces(texttemplate=\"%{text:.1f}\", textposition=\"outside\")\n",
+        "\n",
+        "pand_fig_bar.update_layout(\n",
+        "    xaxis=dict(title=\"Average Suicide Rate During the Pandemic Years (2020–2021)\"),\n",
+        "    yaxis=dict(title=\"Average Suicide Rate (per 100k)\"),\n",
+        "    coloraxis_colorbar=dict(title=\"Suicide Rate (per 100k)\"),\n",
+        "    showlegend=False\n",
+        ")\n",
+        "\n",
+        "pand_fig_bar.show()"
+      ],
+      "id": "c0c39c8b",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "####  {.tabset}\n",
+        "\n",
+        "::: {.card title=\"A Grim Divide: Gender Disparities in Suicide Rates During the Pandemic\"}"
+      ],
+      "id": "f9163bc5"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pand_fig_bar.show()"
+      ],
+      "id": "122a6768",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::\n"
+      ],
+      "id": "f8675de5"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# filtering the dataset for the desired years\n",
+        "filtered_data = suicide_rate_long[\n",
+        "    suicide_rate_long[\"year\"].isin(range(2017, 2022))\n",
+        "]\n",
+        "\n",
+        "# calculating the average suicide rate\n",
+        "yearly_gender_data = (\n",
+        "    filtered_data.groupby([\"year\", \"gender\"], as_index=False)[\"mortality_rate\"]\n",
+        "    .mean()\n",
+        "    .rename(columns={\"mortality_rate\": \"avg_mortality_rate\"})\n",
+        ")\n",
+        "\n",
+        "# line chart to show suicide rates over the years, broken down by gender\n",
+        "pand_fig = px.line(\n",
+        "    yearly_gender_data,\n",
+        "    x=\"year\",\n",
+        "    y=\"avg_mortality_rate\",\n",
+        "    color=\"gender\",\n",
+        "    labels={\"avg_mortality_rate\": \"Average Suicide Rate (per 100k)\", \"year\": \"Year\"},\n",
+        "    line_group=\"gender\"\n",
+        ")\n",
+        "\n",
+        "# annotating the pandemic years (2020 and 2021)\n",
+        "pand_fig.add_vrect(\n",
+        "    x0=2020, x1=2021,\n",
+        "    annotation_text=\"Pandemic Years\",\n",
+        "    annotation_position=\"top left\",\n",
+        "    fillcolor=\"blue\",\n",
+        "    opacity=0.2,\n",
+        "    line_width=0\n",
+        ")\n",
+        "\n",
+        "pand_fig.update_layout(\n",
+        "    xaxis=dict(tickmode=\"linear\", title=\"Year\"),\n",
+        "    yaxis=dict(title=\"Average Suicide Rate (per 100k)\"),\n",
+        "    legend_title=\"Gender\",\n",
+        "    title=dict(x=0.5)  \n",
+        ")\n",
+        "\n",
+        "pand_fig.show()"
+      ],
+      "id": "0961d207",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.card title=\"Tracing the Lines: Suicide Trends Across Time and Gender\"}"
+      ],
+      "id": "f8ba12cc"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pand_fig.show()"
+      ],
+      "id": "9865c60f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::\n"
+      ],
+      "id": "4bb2624d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# top 10 countries by year\n",
+        "top_10_countries = (\n",
+        "    suicide_rate_long.groupby([\"year\", \"country\"], as_index=False)[\"mortality_rate\"]\n",
+        "    .mean()  \n",
+        "    .sort_values([\"year\", \"mortality_rate\"], ascending=[True, False])\n",
+        "    .groupby(\"year\")\n",
+        "    .head(10)  \n",
+        ")\n",
+        "\n",
+        "fig_top_10 = px.bar(\n",
+        "    top_10_countries,\n",
+        "    x=\"mortality_rate\",\n",
+        "    y=\"country\",\n",
+        "    color=\"mortality_rate\", \n",
+        "    color_continuous_scale=\"Blues\", \n",
+        "    animation_frame=\"year\",\n",
+        "    orientation=\"h\",  \n",
+        "    labels={\"mortality_rate\": \"Mortality Rate (per 100k)\"}\n",
+        ")\n",
+        "\n",
+        "fig_top_10.update_layout(\n",
+        "    yaxis=dict(title=\"Top 10 Countries\",  autorange=\"reversed\"),  \n",
+        "    coloraxis_colorbar=dict(\n",
+        "        title=\"Mortality Rate (per 100k)\",  \n",
+        "        ticks=\"outside\"\n",
+        "    ),\n",
+        "    showlegend=True\n",
+        ")\n",
+        "\n",
+        "fig_top_10.show()"
+      ],
+      "id": "a816368a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Row{45%}\n",
+        "\n",
+        "::: {.card title=\"Shifting Shadows: A Yearly View of Suicide Rate Patterns\"}"
+      ],
+      "id": "195ebcf5"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "fig_top_10.show()"
+      ],
+      "id": "1016e5a7",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::\n"
+      ],
+      "id": "60fc1c87"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# calculating the top 10 countries with the highest mortality rates\n",
+        "# computing the average mortality rate \n",
+        "top_countries = (\n",
+        "    suicide_rate_long.groupby(\"country\", as_index=False)\n",
+        "    .agg({\"mortality_rate\": \"mean\"}) \n",
+        "    .sort_values(by=\"mortality_rate\", ascending=False)\n",
+        "    .head(10)\n",
+        ")\n",
+        "\n",
+        "fig_bar = px.bar(\n",
+        "    top_countries,\n",
+        "    x=\"country\",                  \n",
+        "    y=\"mortality_rate\",          \n",
+        "    color=\"mortality_rate\",      \n",
+        "    color_continuous_scale=\"Viridis\",\n",
+        "    labels={\"mortality_rate\": \"Average Suicide Rate (per 100k)\"}\n",
+        ")\n",
+        "\n",
+        "fig_bar.update_layout(\n",
+        "    xaxis_title=\"Top 10 Countries\",\n",
+        "    yaxis_title=\"Average Suicide Rate (per 100k)\",\n",
+        "    xaxis_tickangle=45\n",
+        ")\n",
+        "\n",
+        "fig_bar.show()"
+      ],
+      "id": "16dc991c",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "####  {width=\"40%\"}\n",
+        "\n",
+        "::: {.card title=\"Enduring Shadows: Countries with Persistently High Suicide Rates\"}"
+      ],
+      "id": "538150d7"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "fig_bar.show()"
+      ],
+      "id": "2355e872",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::\n",
+        "\n",
+        "\n",
+        "# Intersections of Happiness and Despair (2021-2022)\n",
+        "##  {.sidebar}\n",
+        "\n",
+        "::: {.callout-tip collapse=\"true\"}\n",
+        "### Key Insights\n",
+        "\n",
+        "-   **Countries Represented in Analysis (2021-2022)**:The merged dataset includes happiness scores and suicide rate metrics, covering 29 countries for the years 2021 and 2022. Only countries with complete data in both datasets (via an inner join) were included in the analysis\n",
+        "-   **Global Average Happiness Score**: The calculated average happiness score across all analyzed countries is 67.3%, reflecting the overall mood and satisfaction during this period.\n",
+        "-   **Global Average Suicide Rate**: Based on the merged data, the global average suicide rate is 11.3 per 100,000 people, providing a standardized comparison across nations.\n",
+        "-   **Happiest Year Globally**: recorded the highest average happiness score in the dataset.\n",
+        "-   **The Year with the Highest Global Average Suicide Rate**: 2022 also recorded the highest global average suicide rate, emphasizing the complex interplay between happiness and mental health.\n",
+        "    -   These insights derive exclusively from the merged happiness score and suicide rate datasets for 2021–2022, highlighting key global patterns within the analyzed timeframe.\n",
+        ":::\n",
+        "\n",
+        "##  {height=\"10%\"}\n",
+        "\n",
+        "### \n"
+      ],
+      "id": "26305cce"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "country_date=  df_merged[df_merged[\"year\"].isin([2021, 2022])]\n",
+        "\n",
+        "country_analysed = country_date[\"country\"].nunique()\n",
+        "\n",
+        "print(f\"Number of countries with data between 2021 and 2022: {country_analysed}\")\n",
+        "print(country_analysed)"
+      ],
+      "id": "13fa1670",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.valuebox title=\"Countries Represented in Analysis\" icon=\"map\" color=\"primary\"}\n",
+        "`{python} country_analysed`\n",
+        ":::\n"
+      ],
+      "id": "7bd1ccd3"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "happiness_dated = df_merged[df_merged[\"year\"].isin([2021, 2022])]\n",
+        "# Global Average Happiness\n",
+        "global_avg_happiness = happiness_dated[\"percent_happiness\"].mean()\n",
+        "\n",
+        "print(f\"Global Average Happiness: {global_avg_happiness:.1f}%\")"
+      ],
+      "id": "ac66898c",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.valuebox title=\"Global Average Happiness\" icon=\"rainbow\" color=\"success\"}\n",
+        "`{python} str(global_avg_happiness.round(1))`%\n",
+        ":::\n"
+      ],
+      "id": "be935022"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "self_harm_dated = df_merged[df_merged[\"year\"].isin([2021, 2022])]\n",
+        "# Global Average Suicide Rate\n",
+        "global_avg_suicide_rate = self_harm_dated[\"mortality_count\"].mean()\n",
+        "\n",
+        "print(f\"Global Average Suicide Rate: {global_avg_suicide_rate:.1f} per 100k\")"
+      ],
+      "id": "65ebdccc",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.valuebox title=\"Global Average Suicide Rate\" icon=\"exclamation-triangle\" color=\"warning\"}\n",
+        "`{python} str(global_avg_suicide_rate.round(1))`\n",
+        ":::\n"
+      ],
+      "id": "048aeaef"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# average happiness score for each year\n",
+        "average_happiness_by_year = df_merged.groupby(\"year\")[\"percent_happiness\"].mean()\n",
+        "\n",
+        "# year with the highest average happiness score\n",
+        "happiest_year = average_happiness_by_year.idxmax()\n",
+        "highest_avg_happiness = average_happiness_by_year.max()\n",
+        "\n",
+        "print(f\"The happiest year globally was {happiest_year}, with an average happiness score of {highest_avg_happiness:.2f}%.\")"
+      ],
+      "id": "9e22bbb7",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.valuebox title=\"The Happiest Year Globally\" icon=\"trophy\" color=\"success\"}\n",
+        "`{python} str(happiest_year)`\n",
+        ":::\n"
+      ],
+      "id": "beae66eb"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "#  average suicide rate for each year\n",
+        "average_suicide_rate_by_year = df_merged.groupby(\"year\")[\"mortality_count\"].mean()\n",
+        "\n",
+        "# year with the highest average suicide rate\n",
+        "year_with_highest_suicide_rate = average_suicide_rate_by_year.idxmax()\n",
+        "highest_avg_suicide_rate = average_suicide_rate_by_year.max()\n",
+        "\n",
+        "print(f\"The year with the highest global average suicide rate was {year_with_highest_suicide_rate}, \"\n",
+        "      f\"with an average suicide rate of {highest_avg_suicide_rate:.1f} per 100k.\")"
+      ],
+      "id": "575b2c6c",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.valuebox title=\"The Year with the Highest Global Average Suicide Rate\" icon=\"exclamation\" color=\"warning\"}\n",
+        "`{python} str(year_with_highest_suicide_rate)`\n",
+        ":::\n",
+        "\n",
+        "###  {height=\"45%\"}\n",
+        "\n",
+        "####  {.tabset width=\"55%\"}\n"
+      ],
+      "id": "80c4c911"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "\n",
+        "# dataset for the years 2021 and 2022\n",
+        "filtered_df = df_merged[df_merged[\"year\"].isin([2021, 2022])]\n",
+        "\n",
+        "# identifing key countries\n",
+        "max_suicide = filtered_df.loc[filtered_df[\"mortality_count\"].idxmax()]\n",
+        "max_happiness = filtered_df.loc[filtered_df[\"percent_happiness\"].idxmax()]\n",
+        "\n",
+        "fig_dated = px.scatter(\n",
+        "    filtered_df,\n",
+        "    x=\"percent_happiness\",\n",
+        "    y=\"mortality_count\",\n",
+        "    color=\"country\",\n",
+        "    trendline=\"ols\",\n",
+        "    labels={\"percent_happiness\": \"Happiness (%)\", \"mortality_count\": \"Suicide Rate (per 100k)\"},\n",
+        "    color_discrete_sequence=px.colors.qualitative.Dark24_r\n",
+        ")\n",
+        "\n",
+        "# annotating points\n",
+        "fig_dated.add_annotation(\n",
+        "    x=max_happiness[\"percent_happiness\"],\n",
+        "    y=max_happiness[\"mortality_count\"],\n",
+        "    text=f\"Highest Happiness ({max_happiness['country']})\",\n",
+        "    showarrow=True,\n",
+        "    arrowhead=2,\n",
+        "    ax=-30,\n",
+        "    ay=-30\n",
+        ")\n",
+        "\n",
+        "fig_dated.add_annotation(\n",
+        "    x=max_suicide[\"percent_happiness\"],\n",
+        "    y=max_suicide[\"mortality_count\"],\n",
+        "    text=f\"Highest Suicide Rate ({max_suicide['country']})\",\n",
+        "    showarrow=True,\n",
+        "    arrowhead=2,\n",
+        "    ax=30,\n",
+        "    ay=-30\n",
+        ")\n",
+        "\n",
+        "fig_dated.show()\n"
+      ],
+      "id": "d42657c0",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.card title=\"Global Contrasts (2021-2022): Finland's Joy vs South Korea's Struggle\"}"
+      ],
+      "id": "1ccf2231"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "fig_dated.show()"
+      ],
+      "id": "6cc6ef84",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::\n"
+      ],
+      "id": "3ebd52c1"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "fig_year = px.scatter(\n",
+        "    df_merged,\n",
+        "    x=\"percent_happiness\",\n",
+        "    y=\"mortality_count\",\n",
+        "    color=\"country\",\n",
+        "    animation_frame=\"year\",\n",
+        "    trendline=\"ols\",\n",
+        "    labels={\"percent_happiness\": \"Happiness (%)\", \"mortality_count\": \"Suicide Rate (per 100k)\"},\n",
+        "    color_discrete_sequence=px.colors.qualitative.Dark24_r\n",
+        ")\n",
+        "fig_year.show()"
+      ],
+      "id": "06b587a7",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.card title=\"A Moving Story: Shifts in Happiness and Suicide Rates Over Time\"}"
+      ],
+      "id": "f771160e"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "fig_year.show()"
+      ],
+      "id": "dde5adbe",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::\n",
+        "\n",
+        "####  {width=\"45%\"}\n"
+      ],
+      "id": "036873b0"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# filtering data for 2021 and 2022\n",
+        "filtered_data = df_merged[df_merged[\"year\"].isin([2021, 2022])]\n",
+        "\n",
+        "#  difference between happiness and suicide rates\n",
+        "filtered_data[\"happiness_suicide_diff\"] = (\n",
+        "    filtered_data[\"percent_happiness\"] - filtered_data[\"mortality_count\"]\n",
+        ")\n",
+        "\n",
+        "# top 10 countries with the largest happiness-suicide difference\n",
+        "top_disparity_countries = (\n",
+        "    filtered_data.groupby(\"country\", as_index=False)[\"happiness_suicide_diff\"]\n",
+        "    .mean()\n",
+        "    .sort_values(by=\"happiness_suicide_diff\", ascending=False)\n",
+        "    .head(10)\n",
+        ")\n",
+        "\n",
+        "disp_fig = px.bar(\n",
+        "    top_disparity_countries,\n",
+        "    x=\"country\",\n",
+        "    y=\"happiness_suicide_diff\",\n",
+        "    color=\"happiness_suicide_diff\",  \n",
+        "    color_continuous_scale=\"Blues\", \n",
+        "    labels={\n",
+        "        \"happiness_suicide_diff\": \"Happiness-Suicide Difference\",\n",
+        "        \"country\": \"Country\"\n",
+        "    },\n",
+        "    title=\"Top 10 Countries with Largest Happiness-Suicide Difference (2021-2022)\"\n",
+        ")\n",
+        "\n",
+        "disp_fig.update_layout(\n",
+        "    xaxis_title=\"Country\",\n",
+        "    yaxis_title=\"Happiness-Suicide Difference\",\n",
+        "    coloraxis_showscale=True  #\n",
+        ")\n",
+        "\n",
+        "disp_fig.show()"
+      ],
+      "id": "fe7da3f2",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.card title=\"Divergent Paths: Top 10 Nations with the Largest Happiness-Suicide Gaps\"}"
+      ],
+      "id": "80ebfed7"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "disp_fig.show()"
+      ],
+      "id": "ce80eafe",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::\n",
+        "\n",
+        "###  {height=\"45%\"}\n"
+      ],
+      "id": "57806551"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# year-on-year percentage change for both happiness and suicide rates for 2021 and 2022\n",
+        "filtered_years = df_merged[df_merged[\"year\"].isin([2021, 2022])]\n",
+        "\n",
+        "# average happiness and suicide rates for each year\n",
+        "yearly_avg = filtered_years.groupby(\"year\").agg(\n",
+        "    avg_happiness=(\"percent_happiness\", \"mean\"),\n",
+        "    avg_suicide=(\"mortality_count\", \"mean\")\n",
+        ").reset_index()\n",
+        "\n",
+        "# percentage change\n",
+        "yearly_avg[\"happiness_change_%\"] = yearly_avg[\"avg_happiness\"].pct_change() * 100\n",
+        "yearly_avg[\"suicide_change_%\"] = yearly_avg[\"avg_suicide\"].pct_change() * 100\n",
+        "\n",
+        "print(yearly_avg)"
+      ],
+      "id": "d8cea7f6",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "####  {width=\"55%\"}\n"
+      ],
+      "id": "fc687c1b"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# data for 2021 and 2022\n",
+        "filtered_years = df_merged[df_merged[\"year\"].isin([2021, 2022])]\n",
+        "\n",
+        "# difference in happiness scores between 2021 and 2022 for each country\n",
+        "happiness_change = filtered_years.pivot(index=\"country\", columns=\"year\", values=\"percent_happiness\").reset_index()\n",
+        "happiness_change[\"change\"] = happiness_change[2022] - happiness_change[2021]\n",
+        "\n",
+        "# top 5 countries with the largest increase\n",
+        "top_improved_countries = happiness_change.sort_values(by=\"change\", ascending=False).head(5)\n",
+        "\n",
+        "print(top_improved_countries)\n",
+        "\n",
+        "fig_shift = px.bar(\n",
+        "    top_improved_countries,\n",
+        "    x=\"change\",\n",
+        "    y=\"country\",\n",
+        "    orientation=\"h\",\n",
+        "    color=\"change\",  \n",
+        "    color_continuous_scale=\"Blues\", \n",
+        "    labels={\"change\": \"Happiness Score Change (%)\", \"country\": \"Country\"},\n",
+        ")\n",
+        "\n",
+        "fig_shift.add_shape(\n",
+        "    type=\"line\",\n",
+        "    x0=0, y0=-0.5, x1=0, y1=4.5,\n",
+        "    line=dict(color=\"Red\", width=2, dash=\"dash\")\n",
+        ")\n",
+        "\n",
+        "fig_shift.update_layout(\n",
+        "    xaxis_title=\"Happiness Score Change (%)\",\n",
+        "    yaxis_title=\"Country\",\n",
+        "    coloraxis_showscale=True \n",
+        ")\n",
+        "\n",
+        "fig_shift.show()"
+      ],
+      "id": "29d49f00",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.card title=\"Turning the Tide: Nations Leading the Biggest Happiness Shifts (2021–2022)\"}"
+      ],
+      "id": "4aad375f"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "fig_shift.show()"
+      ],
+      "id": "abd832ba",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::\n",
+        "\n",
+        "#### \n"
+      ],
+      "id": "eb2fda08"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "# aggregating data by country (averaging 2021–2022)\n",
+        "avg_data = filtered_data.groupby(\"country\", as_index=False).agg(\n",
+        "    avg_happiness=(\"percent_happiness\", \"mean\"),\n",
+        "    avg_suicide=(\"mortality_count\", \"mean\")\n",
+        ")\n",
+        "\n",
+        "# correlation for aggregated data\n",
+        "correlation_avg = avg_data[\"avg_happiness\"].corr(avg_data[\"avg_suicide\"])\n",
+        "print(f\"Correlation (Averaged): {correlation_avg:.2f}\")\n",
+        "\n",
+        "fig_corr_avg = px.scatter(\n",
+        "    avg_data,\n",
+        "    x=\"avg_happiness\",\n",
+        "    y=\"avg_suicide\",\n",
+        "    text=\"country\",\n",
+        "    labels={\"avg_happiness\": \"Average Happiness (%)\", \"avg_suicide\": \"Average Suicide Rate (per 100k)\"},\n",
+        "    color_discrete_sequence=px.colors.qualitative.Set3\n",
+        ")\n",
+        "fig_corr_avg.update_traces(textposition=\"top center\")\n",
+        "fig_corr_avg.show()"
+      ],
+      "id": "13ed9a1b",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.card title=\"Complex Dynamics: Divergent Paths: Top 10 Nations with the Largest Happiness-Suicide Gaps\"}"
+      ],
+      "id": "ff64a2a9"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "fig_corr_avg.show()"
+      ],
+      "id": "883b17d0",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::\n",
+        "\n",
+        "\n",
+        "# Data - Happiness Score\n"
+      ],
+      "id": "dcc67f3f"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "itables.show(happiness_data_long, caption=\"Happiness Score Dataset\", buttons=[\"csvHtml5\"])"
+      ],
+      "id": "aed99f61",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# Data - Suicide Rate"
+      ],
+      "id": "eae5b7d9"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "itables.show(suicide_rate_pivot, caption=\"Suicide Rate Dataset\", buttons=[\"csvHtml5\"])"
+      ],
+      "id": "1b940da6",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# Data - Merged"
+      ],
+      "id": "3a35e738"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "itables.show(df_merged, caption=\"Merged Happiness and Suicide Rate Dataset\", buttons=[\"csvHtml5\"])"
+      ],
+      "id": "42c0d621",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# ABOUT\n",
+        "\n",
+        "The happiness score data originates from the gapminder dataset within Python’s plotly.express library, sourced from the Gapminder Foundation. This non-profit organization champions sustainable global development and the realization of United Nations Millennium Development Goals by advancing the use of data to enhance understanding of social, economic, and environmental progress.\n",
+        "\n",
+        "The suicide rate data is provided by the Organisation for Economic Co-operation and Development (OECD), a global institution comprising 38 member countries. The OECD drives evidence-based policies to foster prosperity, equality, and well-being, leveraging over six decades of data-driven insights and international collaboration."
+      ],
+      "id": "aaab674c"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "display_name": "Python 3",
+      "language": "python",
+      "name": "python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}

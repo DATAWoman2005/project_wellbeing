@@ -1,0 +1,1254 @@
+---
+title: "The Happiness-Despair Nexus: Global Trends and Insights"
+author: "Adijat Adenaike"
+format: dashboard
+theme: yeti
+---
+
+```{python}
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+import itables
+import numpy as np
+import country_converter as cc
+from functools import reduce
+```
+
+```{python}
+#| output: false
+# happiness_score dataset
+happiness_data = pd.read_csv("data\hapiscore_whr.csv")
+
+happiness_data
+```
+
+```{python}
+#| output: false
+# changing dataset to a long format
+happiness_data_long = happiness_data.melt(id_vars="country")
+happiness_data_long
+```
+
+```{python}
+#| output: false
+# changing to representative column names
+happiness_data_long = happiness_data.melt(id_vars="country", var_name="year", value_name = "percent_happiness").sort_values(["country", "year"])
+
+happiness_data_long
+```
+
+```{python}
+#| output: false
+# checking datatype
+happiness_data_long.dtypes
+```
+
+```{python}
+#| output: false
+# converting the 'year' column to integer type, and coercing errors to NaN
+happiness_data_long['year'] = pd.to_numeric(happiness_data_long['year'], errors='coerce')
+
+# Confirm the conversion
+print(happiness_data_long['year'].dtype)
+
+```
+
+```{python}
+#| output: false
+# filtering for year 2017 to 2022
+happiness_data_long = happiness_data_long[
+    (happiness_data_long['year'] >= 2017) & (happiness_data_long['year'] <= 2022)
+]
+
+# Check the result
+print(happiness_data_long['year'].unique())
+print(happiness_data_long["country"].unique())
+print(happiness_data_long.shape)
+```
+
+```{python}
+#| output: false
+# Updating rows where 'country' equals 'UAE'
+happiness_data_long.loc[happiness_data_long['country'] == 'UAE', 'country'] = 'United Arab Emirates'
+
+# Verify the change
+print(happiness_data_long['country'].unique())
+```
+
+```{python}
+#| output: false
+
+# converting country names to ISO3 codes
+happiness_data_long["country_code"] = cc.convert(happiness_data_long["country"], to="ISO3")
+
+print(happiness_data_long.head())
+print(f"Shape after dropping invalid countries: {happiness_data_long.shape}")
+```
+
+```{python}
+#| output: false
+# suicide_rate dataset
+suicide_rate = pd.read_csv("data\suicide_rate_data.csv")
+
+suicide_rate
+```
+
+```{python}
+#| output: false
+# selecting applicable columns
+suicide_rate_subset = suicide_rate [["Reference area", "Sex", "TIME_PERIOD", "OBS_VALUE"]]
+
+suicide_rate_subset
+```
+
+```{python}
+#| output: false
+# changing to representative column names
+suicide_rate_subset = suicide_rate_subset.rename(columns={"Reference area": "country", "Sex": "sex", "TIME_PERIOD": "year", "OBS_VALUE": "mortality_count"})
+
+suicide_rate_subset = suicide_rate_subset.sort_values(["country", "year"])
+
+suicide_rate_subset
+```
+
+```{python}
+#| output: false
+# dropping rows with 'OECD' or 'European Union' in the 'country' column 
+# as only interested in single country names
+suicide_rate_subset = suicide_rate_subset[
+    ~suicide_rate_subset['country'].str.contains("OECD|European Union", case=False, na=False,regex=True)
+]
+
+
+print(suicide_rate_subset['country'].unique())
+print(f"Shape after dropping OECD and European Union rows: {suicide_rate_subset.shape}")
+
+```
+
+```{python}
+#| output: false
+# filtering for year 2017 to 2022
+suicide_rate_subset = suicide_rate_subset[
+    (suicide_rate_subset['year'] >= 2017) & (suicide_rate_subset['year'] <= 2022)
+]
+
+
+print(suicide_rate_subset['year'].unique())
+print(suicide_rate_subset["country"].unique())
+print(suicide_rate_subset.shape)
+```
+
+```{python}
+#| output: false
+# dropping missing value from dataset
+happiness_data_long.dropna(inplace=True)
+
+```
+
+```{python}
+#| output: false
+
+# unique number of countries in happiness dataset
+happy_countries = happiness_data_long["country"].nunique()
+
+happy_countries
+```
+
+```{python}
+happiness_data_long.to_csv('happiness_score.csv', index=False)
+```
+
+```{python}
+#| output: false
+# creating a pivoted version of the 'suicide_rate_subset' dataFrame 
+# to analyze mortality rates by sex (Male, Female, Total)
+# without modifying the original 'suicide_rate_subset
+# pivoting the data so each sex becomes its own column
+suicide_rate_pivot = suicide_rate_subset.pivot_table(
+    index=['country', 'year'],
+    columns='sex',
+    values='mortality_count',
+    aggfunc='sum'  # aggregating if duplicates exist
+).reset_index()
+
+# renaming the columns for clarity
+suicide_rate_pivot.columns.name = None  # removing column index name
+suicide_rate_pivot = suicide_rate_pivot.rename(columns={
+    'Male': 'mortality_male',
+    'Female': 'mortality_female',
+    'Total': 'mortality_total'
+})
+
+suicide_rate_pivot["country_code"]  = cc.convert(suicide_rate_pivot["country"], to="ISO3")
+
+# cleaned dataset
+suicide_rate_pivot.head()
+```
+
+```{python}
+#| output: false
+# unique number of countries in happiness dataset
+suic_country_count = suicide_rate_pivot["country"].nunique()
+
+suic_country_count
+```
+
+```{python}
+suicide_rate_pivot.to_csv('suicide_rate.csv', index=False)
+```
+
+```{python}
+#| output: false
+# filtering to keep only the  rows with 'Total' values
+suicide_rate_filtered = suicide_rate_subset[suicide_rate_subset["sex"] == "Total"]
+
+suicide_rate_filtered
+```
+
+```{python}
+#| output: false
+# dropping the 'sex' column as it's no longer needed
+suicide_rate_filtered = suicide_rate_filtered.drop(columns=["sex"]).sort_values(["country", "year"])
+
+suicide_rate_filtered.head()
+```
+
+```{python}
+#| output: false
+suicide_rate_filtered ["country_code"] = cc.convert(suicide_rate_filtered ["country"], to="ISO3")
+
+print(suicide_rate_filtered .head())
+print(f"New shape of the DataFrame: {suicide_rate_filtered.shape}")
+```
+
+```{python}
+#| output: false
+print(happiness_data_long.shape)
+print(suicide_rate_filtered.shape)
+print(suicide_rate_pivot.shape)
+
+```
+
+```{python}
+#| output: false
+# joining suicide_rate with happiness on 'country_code' and 'year'
+data_frames = [suicide_rate_filtered, 
+    happiness_data_long]
+df_merged = reduce(lambda left, right: pd.merge(left, right,  on=['country_code','year'],
+    how='inner'), data_frames)
+
+# replacing missing values
+# replacing NaN with 'Unknown' for object (string) columns
+for col in df_merged.select_dtypes(include='object').columns:
+    df_merged[col].fillna('Unknown', inplace=True)
+
+# replacing NaN with -1 for numeric columns
+for col in df_merged.select_dtypes(include='number').columns:
+    df_merged[col].fillna(-1, inplace=True)
+
+df_merged.head(20)
+```
+
+```{python}
+#| output: false
+df_merged = df_merged.drop(columns="country_x")
+df_merged.rename(columns={"country_y": "country"}, inplace=True)
+df_merged.head(5)
+```
+
+```{python}
+#| output: false
+# rearranging columns in a more intuitive order
+column_order = ['country_code', 'country', 'year', 'percent_happiness', 'mortality_count', 'percent_internet_household']
+if set(column_order).issubset(df_merged.columns):
+    df_merged = df_merged[column_order]
+
+# Check the data types
+df_merged
+```
+
+```{python}
+#| output: false
+df_merged.to_csv('final_merged.csv', index=False)
+```
+
+
+# Rising and Falling Joy: A Global Perspective on Happiness
+
+```{python}
+
+#| output: false
+# 1. Global Average Happiness
+global_avg_happiness = happiness_data_long["percent_happiness"].mean()
+print(f"{global_avg_happiness:.1f}%.")
+
+# 2. Happiest Year Globally
+happiest_year = (
+    happiness_data_long.groupby("year")["percent_happiness"].mean()
+    .idxmax()
+)
+happiest_year_avg = (
+    happiness_data_long.groupby("year")["percent_happiness"].mean()
+    .max()
+)
+print(f"The happiest year globally was {happiest_year}, with an average happiness of {happiest_year_avg:.1f}%.")
+
+# 3. Most Stable Performer
+country_variability = (
+    happiness_data_long.groupby("country")["percent_happiness"].std()
+)
+most_stable_country = country_variability.idxmin()
+least_variability = country_variability.min()
+print(f"The most stable performer was {most_stable_country}, with a variability of ±{least_variability:.1f}%.")
+
+# 4. Global Happiness Gap
+happiest_country_avg = (
+    happiness_data_long.groupby("country")["percent_happiness"].mean()
+    .max()
+)
+least_happy_country_avg = (
+    happiness_data_long.groupby("country")["percent_happiness"].mean()
+    .min()
+)
+happiness_gap = happiest_country_avg - least_happy_country_avg
+print(f"The global happiness gap is {happiness_gap:.1f} percentage points.")
+
+```
+
+
+##  {.sidebar}
+
+::: {.callout-tip collapse="true"}
+### Key Insights
+
+-   **Countries Represented in Analysis**: The happiness score dataset spans 152 countries, offering a comprehensive view of global happiness trends over six years (2017–2022).
+-   **Global Average Happiness**: The average global happiness score during this period is 55.6%, reflecting the overall sentiment and satisfaction worldwide.
+-   **Happiest Country's Average**: The country with the highest happiness score maintains an impressive average of 78.1%, showcasing notable consistency in well-being.
+-   **Happiest Year**: The year 2020 stands out as the happiest year globally, likely influenced by unique social and cultural dynamics during the pandemic.
+-   **Happiness Gap**: A 55.2% gap highlights the stark disparities in happiness levels between the happiest and least happy nations, emphasizing global inequality in well-being.
+:::
+
+## {height = "10%"}
+
+### 
+
+::: {.valuebox title="Countries Represented in Analysis" icon="globe" color="primary"}
+`{python} happy_countries`
+:::
+
+::: {.valuebox title="Global Avg Happiness" icon="emoji-smile" color="#d4af37"}
+`{python} str(global_avg_happiness.round(1))`%
+:::
+
+::: {.valuebox title="Happiest Country Avg" icon="trophy" color="#d4af37"}
+`{python} str(happiest_country_avg.round(1))`%
+:::
+
+::: {.valuebox title="Happiest Year" icon="calendar2-heart" color="#d4af37"}
+`{python} str(happiest_year)`
+:::
+
+::: {.valuebox title="Happiness Gap" icon="bar-chart" color="primary"}
+`{python} str(happiness_gap.round(1))`%
+:::
+
+
+```{python}
+#| output: false
+# top 10 countries overall based on maximum percent_happiness
+top_countries_overall = df_merged.groupby("country")["percent_happiness"].max().nlargest(10).index
+
+# filtering data to include only these countries across all years
+consistent_top_countries = df_merged[df_merged["country"].isin(top_countries_overall)]
+
+# bar chart
+fig = px.bar(
+    consistent_top_countries,
+    x="country_code",
+    y="percent_happiness",
+    color="year",
+    labels={"percent_happiness": "Happiness Score (%)", "country_code": "ISO3"},
+    text="percent_happiness"
+)
+
+fig.update_traces(texttemplate='%{text}', textposition='inside')
+fig.update_layout(
+    xaxis_title="Finland Dominates Happiness Rankings; Canada Shines in 9th place at 74.2%!",
+    yaxis_title="Percent Happiness",
+    showlegend=True
+)
+
+fig.show()
+
+
+# calculating the highest scoring country and its score
+highest_country = consistent_top_countries.groupby("country")["percent_happiness"].max().idxmax()
+highest_score = consistent_top_countries.groupby("country")["percent_happiness"].max().max()
+
+# calculating Canada's ranking
+country_scores = consistent_top_countries.groupby("country")["percent_happiness"].max()
+ranked_countries = country_scores.sort_values(ascending=False).reset_index()
+canada_rank = ranked_countries[ranked_countries["country"] == "Canada"].index[0] + 1
+canada_score = country_scores["Canada"]
+
+
+output = (
+    f"For 5 Years Straight, {highest_country} Tops the Global Happiness Chart at {highest_score:.1f}% while Canada Proudly Ranks {canada_rank}th at {canada_score:.1f}%"
+)
+print(output)
+
+```
+
+### Row {height="45%"}
+
+####  {width="60%"}
+
+::: {.card title="From Blue to Gold: Tracking Happiness Among the Top 10 Countries"}
+```{python}
+fig.show()
+```
+:::
+
+```{python}
+#| output: false
+
+# calculating global average happiness per year
+global_trends = happiness_data_long.groupby("year")["percent_happiness"].mean().reset_index()
+
+# line chart
+line_fig = px.line(
+    global_trends,
+    x="year",
+    y="percent_happiness",
+    labels={"percent_happiness": "Avg Happiness Score (%)", "year": "Year"},
+    markers=True
+)
+
+# annotating key events (e.g., pandemic in 2020)
+line_fig.add_annotation(
+    x=2020,
+    y=global_trends.loc[global_trends["year"] == 2020, "percent_happiness"].values[0],
+    text="Pandemic Impact",
+    showarrow=True,
+    arrowhead=2,
+    ax=-40,
+    ay=-40
+)
+
+line_fig.show()
+
+```
+####  {.tabset width="40%"}
+
+::: {.card title="Happiness Peaked: A Pandemic Tale of Resilience and Decline"}
+```{python}
+line_fig.show()
+```
+:::
+
+::: {.card title="Key Insight"}
+The line chart visualizes the global average happiness trend from 2017 to 2022. It shows a steady rise in happiness from 2017 to 2020, peaking during the pandemic year at 57.5%. While this might seem counterintuitive, it reflects resilience in high-ranking nations like Finland and Denmark, which helped maintain high global averages. After 2020, a noticeable decline highlights the longer-term impacts of the pandemic, economic challenges, and global uncertainty. This visual emphasizes how global averages can mask country-specific variations, making it essential to analyze individual trends for a deeper understanding.
+:::
+
+```{python}
+#| output: false
+
+# calculating variability for each country
+country_variability = happiness_data_long.groupby("country")["percent_happiness"].std()
+
+# most stable performer
+most_stable_country = country_variability.idxmin()
+least_variability = country_variability.min()
+
+# result
+print(f"The most stable performer was {most_stable_country}, with a variability of ±{least_variability:.1f}%.")
+
+# DataFrame for visualization
+variability_df = country_variability.reset_index().rename(columns={"percent_happiness": "variability"})
+
+# sorting the data by variability
+variability_df = variability_df.sort_values(by="variability")
+
+# line chart
+scatter_fig = px.line(
+    variability_df,
+    x="variability",
+    y="country",
+    title="Happiness Variability by Country",
+    labels={"variability": "Variability (Standard Deviation)", "country": "Country"},
+    markers=True,
+    color_discrete_sequence=["blue"],
+)
+
+# highlighting the most stable performer
+scatter_fig.add_scatter(
+    x=[least_variability],
+    y=[most_stable_country],
+    mode="markers+text",
+    text=[f"Most Stable Country: {most_stable_country} with a variability of ±{least_variability:.1f}%"],
+    marker=dict(size=10, color="red"),
+    textposition="bottom right"
+)
+
+scatter_fig.show()
+```
+###  {height="45%"}
+
+####  {width="60%"}
+
+::: {.card title="Stability at a Cost: Exploring Happiness at Rock Bottom"}
+```{python}
+scatter_fig.show()
+```
+:::
+
+```{python}
+#| output: false
+
+# creating a DataFrame for variability
+variability_df = country_variability.reset_index().rename(columns={"percent_happiness": "variability"})
+
+# sorting the data by variability
+variability_df = variability_df.sort_values(by="variability").reset_index(drop=True)
+
+# add a ranking column for variability
+variability_df["Variability Rank"] = variability_df.index + 1
+
+# calculating mean happiness score for each country
+average_happiness = happiness_data_long.groupby("country")["percent_happiness"].mean()
+
+# merging average happiness scores with variability DataFrame
+variability_df = variability_df.merge(average_happiness.reset_index(), on="country")
+variability_df = variability_df.rename(columns={"percent_happiness": "average_happiness"})
+
+# adding a ranking column for happiness score
+variability_df = variability_df.sort_values(by="average_happiness", ascending=False).reset_index(drop=True)
+variability_df["Happiness Rank"] = variability_df.index + 1
+
+# extracting the top 10 most consistent countries by variability
+top_10_consistent = variability_df.nsmallest(10, "variability")
+
+# top 10 table for reference
+print("\nTop 10 Most Consistent Countries:")
+print(top_10_consistent[["country", "variability", "average_happiness", "Variability Rank", "Happiness Rank"]])
+```
+
+```{python}
+#| output: false
+# extracting the top 10 most consistent countries by variability
+top_10_consistent = variability_df.nsmallest(10, "variability")
+
+# defining cell colors for gradient effect
+variability_colors = [
+    f"rgba({255-int(value*45)}, {255-int(value*15)}, 255, 0.8)"
+    for value in top_10_consistent["variability"]
+]
+happiness_colors = [
+    f"rgba(255, {255-int(value)}, 150, 0.8)"
+    for value in top_10_consistent["average_happiness"]
+]
+rank_colors = [
+    f"rgba({255-int(value*25)}, {255-int(value*15)}, 255, 0.8)"
+    for value in top_10_consistent["Variability Rank"]
+]
+
+# creating a styled table with colors
+fig_top_10_table = go.Figure(
+    data=[
+        go.Table(
+            header=dict(
+                values=[
+                    "Country",
+                    "Variability (Standard Deviation)",
+                    "Average Happiness Score",
+                    "Variability Rank",
+                    "Happiness Rank",
+                ],
+                fill_color="lightblue",
+                align="left",
+                font=dict(size=12, color="black"),
+            ),
+            cells=dict(
+                values=[
+                    top_10_consistent["country"],
+                    top_10_consistent["variability"].round(1),
+                    top_10_consistent["average_happiness"].round(1),
+                    top_10_consistent["Variability Rank"],
+                    top_10_consistent["Happiness Rank"],
+                ],
+                fill_color=[
+                    ["white"] * len(top_10_consistent),  
+                    variability_colors,  
+                    happiness_colors,  
+                    rank_colors, 
+                    ["white"] * len(top_10_consistent),  
+                ],
+                align="left",
+                font=dict(size=11, color="black"),
+            ),
+        )
+    ]
+)
+
+fig_top_10_table.show()
+```
+#### 
+
+::: {.card title="Global Happiness Stability: When Consistency Masks Contrasting Realities"}
+```{python}
+fig_top_10_table.show()
+```
+:::
+
+
+# Shadows of Despair: A Global Suicide Perspective
+
+```{python}
+#| output: false
+global_avg_suicide_mortality = suicide_rate_pivot["mortality_total"].mean()
+global_avg_suicide_mortality
+
+average_by_year = suicide_rate_pivot.groupby('year')['mortality_total'].mean()
+
+# Highest Suicide Mortality Year Globally
+year_with_highest_rate =  suicide_rate_pivot.groupby('year')['mortality_total'].mean().idxmax()
+
+highest_avg_rate = average_by_year.max()
+year_with_lowest_rate = average_by_year.idxmin()
+lowest_avg_rate = average_by_year.min()
+
+print(f"Year with Highest Average Suicide Mortality Rate: {year_with_highest_rate}")
+print(f"Average Mortality Rate for that Year: {highest_avg_rate:.2f} per 100,000 people")
+print(f"Year with Lowest Average Suicide Mortality Rate: {year_with_lowest_rate}")
+print(f"Average Mortality Rate for that Year: {lowest_avg_rate:.2f} per 100,000 people")
+```
+
+##  {.sidebar}
+
+::: {.callout-tip collapse="true"}
+### Key Insights
+
+-   **Countries Represented in Analysis**: The dataset spans 46 countries, providing a comprehensive view of global suicide trends over six years (2017–2022).
+-   **Global Average Suicide Rate**: The average suicide rate during this period is 10.7 per 100,000 people, offering a standardized measure for cross-country comparison.
+-   **Year with Highest Rate**: 2022 recorded the highest global suicide rate within the analyzed timeframe.
+-   **Year with Lowest Rate**: 2018 had the lowest global suicide rate during the period of analysis.
+-   **Male-to-Female Suicide Ratio**: 3.7:1 - Men are nearly 3.7 times more likely to die by suicide than women, highlighting a persistent gender disparity in suicide rates.
+:::
+
+##  {height="10%"}
+
+### 
+
+::: {.valuebox title="Countries Represented in Analysis" icon="globe2" color="primary"}
+`{python} suic_country_count`
+:::
+
+::: {.valuebox title="Global Avg Suicide Rate" icon="graph-up" color="primary"}
+`{python} str(global_avg_suicide_mortality.round(1))`
+:::
+
+::: {.valuebox title="Year with Highest Rate" icon="exclamation-octagon" color="danger"}
+`{python} str(year_with_highest_rate)`
+:::
+
+::: {.valuebox title="Year with Lowest Rate" icon="stars" color="success"}
+`{python} str(year_with_lowest_rate)`
+:::
+
+```{python}
+#| output: false
+# global average mortality rates for males and females
+global_avg_male = suicide_rate_pivot['mortality_male'].mean()
+global_avg_female = suicide_rate_pivot['mortality_female'].mean()
+
+# male-to-female ratio
+male_to_female_ratio = global_avg_male / global_avg_female
+
+# formating the ratio as X:1
+formatted_ratio = f"{male_to_female_ratio:.1f}:1"
+
+
+print(f"Global Male-to-Female Suicide Mortality Ratio: {formatted_ratio}")
+
+```
+
+::: {.valuebox title="Staggering Male Suicide Disparity" icon="people" color="danger"} 
+`{python} formatted_ratio` 
+:::
+
+### 
+####  {width="60%"}
+
+```{python}
+#| output: false
+# reshaping data for gender-specific visualization
+suicide_rate_long = suicide_rate_pivot.melt(
+    id_vars=["country", "year", "country_code"],
+    value_vars=["mortality_female", "mortality_male", "mortality_total"],
+    var_name="gender",
+    value_name="mortality_rate"
+)
+
+# mapping gender column to readable labels
+suicide_rate_long["gender"] = suicide_rate_long["gender"].map({
+    "mortality_female": "Female",
+    "mortality_male": "Male",
+    "mortality_total": "Total"
+})
+
+fig_map = px.choropleth(
+    suicide_rate_long,
+    locations="country_code",            
+    color="mortality_rate",           
+    hover_name="country", 
+    hover_data="gender",
+    animation_frame="year",  
+    color_continuous_scale="Viridis",     
+    labels={"mortality_rate": "Suicide Rate (per 100k)"}, 
+)
+
+fig_map.update_layout(
+    geo=dict(
+        showframe=False,
+        showcoastlines=True,
+        projection_type="natural earth" 
+ ),
+    coloraxis_colorbar=dict(
+        tickmode="array",
+        tickvals=list(range(1, int(suicide_rate_long["mortality_rate"].max()) + 5, 5)),
+        ticktext=[str(i) for i in range(1, int(suicide_rate_long["mortality_rate"].max()) + 5, 5)],
+        title="Suicide Rate (per 100k)"
+    )
+
+)
+
+fig_map.show()
+```
+
+::: {.card title="Shadows Across Borders: Mapping Global Suicide Trends"}
+```{python}
+fig_map.show()
+```
+:::
+
+```{python}
+#| output: false
+# filtering the dataset for the pandemic years (2020 and 2021)
+pandemic_data = suicide_rate_long[
+    suicide_rate_long["year"].isin([2020, 2021])
+]
+
+# calculating the average suicide rate
+pandemic_avg_rate = (
+    pandemic_data.groupby("gender", as_index=False)["mortality_rate"]
+    .mean()
+    .rename(columns={"mortality_rate": "avg_mortality_rate"})
+)
+
+# calculated averages
+print(pandemic_avg_rate)
+
+pand_fig_bar = px.bar(
+    pandemic_avg_rate,
+    x="gender",
+    y="avg_mortality_rate",
+    color="avg_mortality_rate", 
+    text="avg_mortality_rate",
+    labels={"avg_mortality_rate": "Average Suicide Rate (per 100k)", "gender": "Gender"},
+    color_continuous_scale="Blues" 
+)
+
+pand_fig_bar.update_traces(texttemplate="%{text:.1f}", textposition="outside")
+
+pand_fig_bar.update_layout(
+    xaxis=dict(title="Average Suicide Rate During the Pandemic Years (2020–2021)"),
+    yaxis=dict(title="Average Suicide Rate (per 100k)"),
+    coloraxis_colorbar=dict(title="Suicide Rate (per 100k)"),
+    showlegend=False
+)
+
+pand_fig_bar.show()
+
+```
+####  {.tabset}
+
+::: {.card title="A Grim Divide: Gender Disparities in Suicide Rates During the Pandemic"}
+```{python}
+pand_fig_bar.show()
+```
+:::
+
+```{python}
+#| output: false
+# filtering the dataset for the desired years
+filtered_data = suicide_rate_long[
+    suicide_rate_long["year"].isin(range(2017, 2022))
+]
+
+# calculating the average suicide rate
+yearly_gender_data = (
+    filtered_data.groupby(["year", "gender"], as_index=False)["mortality_rate"]
+    .mean()
+    .rename(columns={"mortality_rate": "avg_mortality_rate"})
+)
+
+# line chart to show suicide rates over the years, broken down by gender
+pand_fig = px.line(
+    yearly_gender_data,
+    x="year",
+    y="avg_mortality_rate",
+    color="gender",
+    labels={"avg_mortality_rate": "Average Suicide Rate (per 100k)", "year": "Year"},
+    line_group="gender"
+)
+
+# annotating the pandemic years (2020 and 2021)
+pand_fig.add_vrect(
+    x0=2020, x1=2021,
+    annotation_text="Pandemic Years",
+    annotation_position="top left",
+    fillcolor="blue",
+    opacity=0.2,
+    line_width=0
+)
+
+pand_fig.update_layout(
+    xaxis=dict(tickmode="linear", title="Year"),
+    yaxis=dict(title="Average Suicide Rate (per 100k)"),
+    legend_title="Gender",
+    title=dict(x=0.5)  
+)
+
+pand_fig.show()
+```
+::: {.card title="Tracing the Lines: Suicide Trends Across Time and Gender"}
+```{python}
+pand_fig.show()
+```
+:::
+
+```{python}
+#| output: false
+# top 10 countries by year
+top_10_countries = (
+    suicide_rate_long.groupby(["year", "country"], as_index=False)["mortality_rate"]
+    .mean()  
+    .sort_values(["year", "mortality_rate"], ascending=[True, False])
+    .groupby("year")
+    .head(10)  
+)
+
+fig_top_10 = px.bar(
+    top_10_countries,
+    x="mortality_rate",
+    y="country",
+    color="mortality_rate", 
+    color_continuous_scale="Blues", 
+    animation_frame="year",
+    orientation="h",  
+    labels={"mortality_rate": "Mortality Rate (per 100k)"}
+)
+
+fig_top_10.update_layout(
+    yaxis=dict(title="Top 10 Countries",  autorange="reversed"),  
+    coloraxis_colorbar=dict(
+        title="Mortality Rate (per 100k)",  
+        ticks="outside"
+    ),
+    showlegend=True
+)
+
+fig_top_10.show()
+```
+### Row{45%}
+
+::: {.card title="Shifting Shadows: A Yearly View of Suicide Rate Patterns"}
+```{python}
+fig_top_10.show()
+```
+:::
+
+
+```{python}
+#| output: false
+# calculating the top 10 countries with the highest mortality rates
+# computing the average mortality rate 
+top_countries = (
+    suicide_rate_long.groupby("country", as_index=False)
+    .agg({"mortality_rate": "mean"}) 
+    .sort_values(by="mortality_rate", ascending=False)
+    .head(10)
+)
+
+fig_bar = px.bar(
+    top_countries,
+    x="country",                  
+    y="mortality_rate",          
+    color="mortality_rate",      
+    color_continuous_scale="Viridis",
+    labels={"mortality_rate": "Average Suicide Rate (per 100k)"}
+)
+
+fig_bar.update_layout(
+    xaxis_title="Top 10 Countries",
+    yaxis_title="Average Suicide Rate (per 100k)",
+    xaxis_tickangle=45
+)
+
+fig_bar.show()
+```
+####  {width="40%"}
+
+::: {.card title="Enduring Shadows: Countries with Persistently High Suicide Rates"}
+```{python}
+fig_bar.show()
+```
+:::
+
+
+# Intersections of Happiness and Despair (2021-2022)
+##  {.sidebar}
+
+::: {.callout-tip collapse="true"}
+### Key Insights
+
+-   **Countries Represented in Analysis (2021-2022)**:The merged dataset includes happiness scores and suicide rate metrics, covering 29 countries for the years 2021 and 2022. Only countries with complete data in both datasets (via an inner join) were included in the analysis
+-   **Global Average Happiness Score**: The calculated average happiness score across all analyzed countries is 67.3%, reflecting the overall mood and satisfaction during this period.
+-   **Global Average Suicide Rate**: Based on the merged data, the global average suicide rate is 11.3 per 100,000 people, providing a standardized comparison across nations.
+-   **Happiest Year Globally**: recorded the highest average happiness score in the dataset.
+-   **The Year with the Highest Global Average Suicide Rate**: 2022 also recorded the highest global average suicide rate, emphasizing the complex interplay between happiness and mental health.
+    -   These insights derive exclusively from the merged happiness score and suicide rate datasets for 2021–2022, highlighting key global patterns within the analyzed timeframe.
+:::
+
+##  {height="10%"}
+
+### 
+
+```{python}
+
+#| output: false
+country_date=  df_merged[df_merged["year"].isin([2021, 2022])]
+
+country_analysed = country_date["country"].nunique()
+
+print(f"Number of countries with data between 2021 and 2022: {country_analysed}")
+print(country_analysed)
+
+```
+
+::: {.valuebox title="Countries Represented in Analysis" icon="map" color="primary"}
+`{python} country_analysed`
+:::
+
+```{python}
+#| output: false
+happiness_dated = df_merged[df_merged["year"].isin([2021, 2022])]
+# Global Average Happiness
+global_avg_happiness = happiness_dated["percent_happiness"].mean()
+
+print(f"Global Average Happiness: {global_avg_happiness:.1f}%")
+
+```
+
+::: {.valuebox title="Global Average Happiness" icon="rainbow" color="success"}
+`{python} str(global_avg_happiness.round(1))`%
+:::
+
+```{python}
+#| output: false
+self_harm_dated = df_merged[df_merged["year"].isin([2021, 2022])]
+# Global Average Suicide Rate
+global_avg_suicide_rate = self_harm_dated["mortality_count"].mean()
+
+print(f"Global Average Suicide Rate: {global_avg_suicide_rate:.1f} per 100k")
+
+```
+
+::: {.valuebox title="Global Average Suicide Rate" icon="exclamation-triangle" color="warning"}
+`{python} str(global_avg_suicide_rate.round(1))`
+:::
+
+```{python}
+#| output: false
+# average happiness score for each year
+average_happiness_by_year = df_merged.groupby("year")["percent_happiness"].mean()
+
+# year with the highest average happiness score
+happiest_year = average_happiness_by_year.idxmax()
+highest_avg_happiness = average_happiness_by_year.max()
+
+print(f"The happiest year globally was {happiest_year}, with an average happiness score of {highest_avg_happiness:.2f}%.")
+
+```
+
+::: {.valuebox title="The Happiest Year Globally" icon="trophy" color="success"}
+`{python} str(happiest_year)`
+:::
+
+```{python}
+#| output: false
+#  average suicide rate for each year
+average_suicide_rate_by_year = df_merged.groupby("year")["mortality_count"].mean()
+
+# year with the highest average suicide rate
+year_with_highest_suicide_rate = average_suicide_rate_by_year.idxmax()
+highest_avg_suicide_rate = average_suicide_rate_by_year.max()
+
+print(f"The year with the highest global average suicide rate was {year_with_highest_suicide_rate}, "
+      f"with an average suicide rate of {highest_avg_suicide_rate:.1f} per 100k.")
+
+```
+
+::: {.valuebox title="The Year with the Highest Global Average Suicide Rate" icon="exclamation" color="warning"}
+`{python} str(year_with_highest_suicide_rate)`
+:::
+
+###  {height="45%"}
+
+####  {.tabset width="55%"}
+
+```{python}
+#| output: false
+
+# dataset for the years 2021 and 2022
+filtered_df = df_merged[df_merged["year"].isin([2021, 2022])]
+
+# identifing key countries
+max_suicide = filtered_df.loc[filtered_df["mortality_count"].idxmax()]
+max_happiness = filtered_df.loc[filtered_df["percent_happiness"].idxmax()]
+
+fig_dated = px.scatter(
+    filtered_df,
+    x="percent_happiness",
+    y="mortality_count",
+    color="country",
+    trendline="ols",
+    labels={"percent_happiness": "Happiness (%)", "mortality_count": "Suicide Rate (per 100k)"},
+    color_discrete_sequence=px.colors.qualitative.Dark24_r
+)
+
+# annotating points
+fig_dated.add_annotation(
+    x=max_happiness["percent_happiness"],
+    y=max_happiness["mortality_count"],
+    text=f"Highest Happiness ({max_happiness['country']})",
+    showarrow=True,
+    arrowhead=2,
+    ax=-30,
+    ay=-30
+)
+
+fig_dated.add_annotation(
+    x=max_suicide["percent_happiness"],
+    y=max_suicide["mortality_count"],
+    text=f"Highest Suicide Rate ({max_suicide['country']})",
+    showarrow=True,
+    arrowhead=2,
+    ax=30,
+    ay=-30
+)
+
+fig_dated.show()
+
+
+```
+
+::: {.card title="Global Contrasts (2021-2022): Finland's Joy vs South Korea's Struggle"}
+```{python}
+fig_dated.show()
+```
+:::
+
+```{python}
+#| output: false
+fig_year = px.scatter(
+    df_merged,
+    x="percent_happiness",
+    y="mortality_count",
+    color="country",
+    animation_frame="year",
+    trendline="ols",
+    labels={"percent_happiness": "Happiness (%)", "mortality_count": "Suicide Rate (per 100k)"},
+    color_discrete_sequence=px.colors.qualitative.Dark24_r
+)
+fig_year.show()
+```
+
+::: {.card title="A Moving Story: Shifts in Happiness and Suicide Rates Over Time"}
+```{python}
+fig_year.show()
+```
+:::
+
+####  {width="45%"}
+
+```{python}
+#| output: false
+# filtering data for 2021 and 2022
+filtered_data = df_merged[df_merged["year"].isin([2021, 2022])]
+
+#  difference between happiness and suicide rates
+filtered_data["happiness_suicide_diff"] = (
+    filtered_data["percent_happiness"] - filtered_data["mortality_count"]
+)
+
+# top 10 countries with the largest happiness-suicide difference
+top_disparity_countries = (
+    filtered_data.groupby("country", as_index=False)["happiness_suicide_diff"]
+    .mean()
+    .sort_values(by="happiness_suicide_diff", ascending=False)
+    .head(10)
+)
+
+disp_fig = px.bar(
+    top_disparity_countries,
+    x="country",
+    y="happiness_suicide_diff",
+    color="happiness_suicide_diff",  
+    color_continuous_scale="Blues", 
+    labels={
+        "happiness_suicide_diff": "Happiness-Suicide Difference",
+        "country": "Country"
+    },
+    title="Top 10 Countries with Largest Happiness-Suicide Difference (2021-2022)"
+)
+
+disp_fig.update_layout(
+    xaxis_title="Country",
+    yaxis_title="Happiness-Suicide Difference",
+    coloraxis_showscale=True  #
+)
+
+disp_fig.show()
+```
+
+::: {.card title="Divergent Paths: Top 10 Nations with the Largest Happiness-Suicide Gaps"}
+```{python}
+disp_fig.show()
+```
+:::
+
+###  {height="45%"}
+
+```{python}
+#| output: false
+# year-on-year percentage change for both happiness and suicide rates for 2021 and 2022
+filtered_years = df_merged[df_merged["year"].isin([2021, 2022])]
+
+# average happiness and suicide rates for each year
+yearly_avg = filtered_years.groupby("year").agg(
+    avg_happiness=("percent_happiness", "mean"),
+    avg_suicide=("mortality_count", "mean")
+).reset_index()
+
+# percentage change
+yearly_avg["happiness_change_%"] = yearly_avg["avg_happiness"].pct_change() * 100
+yearly_avg["suicide_change_%"] = yearly_avg["avg_suicide"].pct_change() * 100
+
+print(yearly_avg)
+
+```
+
+####  {width="55%"}
+
+```{python}
+#| output: false
+# data for 2021 and 2022
+filtered_years = df_merged[df_merged["year"].isin([2021, 2022])]
+
+# difference in happiness scores between 2021 and 2022 for each country
+happiness_change = filtered_years.pivot(index="country", columns="year", values="percent_happiness").reset_index()
+happiness_change["change"] = happiness_change[2022] - happiness_change[2021]
+
+# top 5 countries with the largest increase
+top_improved_countries = happiness_change.sort_values(by="change", ascending=False).head(5)
+
+print(top_improved_countries)
+
+fig_shift = px.bar(
+    top_improved_countries,
+    x="change",
+    y="country",
+    orientation="h",
+    color="change",  
+    color_continuous_scale="Blues", 
+    labels={"change": "Happiness Score Change (%)", "country": "Country"},
+)
+
+fig_shift.add_shape(
+    type="line",
+    x0=0, y0=-0.5, x1=0, y1=4.5,
+    line=dict(color="Red", width=2, dash="dash")
+)
+
+fig_shift.update_layout(
+    xaxis_title="Happiness Score Change (%)",
+    yaxis_title="Country",
+    coloraxis_showscale=True 
+)
+
+fig_shift.show()
+```
+
+::: {.card title="Turning the Tide: Nations Leading the Biggest Happiness Shifts (2021–2022)"}
+```{python}
+fig_shift.show()
+```
+:::
+
+#### 
+
+```{python}
+#| output: false
+# aggregating data by country (averaging 2021–2022)
+avg_data = filtered_data.groupby("country", as_index=False).agg(
+    avg_happiness=("percent_happiness", "mean"),
+    avg_suicide=("mortality_count", "mean")
+)
+
+# correlation for aggregated data
+correlation_avg = avg_data["avg_happiness"].corr(avg_data["avg_suicide"])
+print(f"Correlation (Averaged): {correlation_avg:.2f}")
+
+fig_corr_avg = px.scatter(
+    avg_data,
+    x="avg_happiness",
+    y="avg_suicide",
+    text="country",
+    labels={"avg_happiness": "Average Happiness (%)", "avg_suicide": "Average Suicide Rate (per 100k)"},
+    color_discrete_sequence=px.colors.qualitative.Set3
+)
+fig_corr_avg.update_traces(textposition="top center")
+fig_corr_avg.show()
+```
+
+::: {.card title="Complex Dynamics: Divergent Paths: Top 10 Nations with the Largest Happiness-Suicide Gaps"}
+```{python}
+fig_corr_avg.show()
+```
+:::
+
+
+# Data - Happiness Score
+
+```{python}
+itables.show(happiness_data_long, caption="Happiness Score Dataset", buttons=["csvHtml5"])
+
+```
+
+# Data - Suicide Rate
+```{python}
+itables.show(suicide_rate_pivot, caption="Suicide Rate Dataset", buttons=["csvHtml5"])
+```
+
+# Data - Merged
+```{python}
+itables.show(df_merged, caption="Merged Happiness and Suicide Rate Dataset", buttons=["csvHtml5"])
+```
+
+# ABOUT
+
+The happiness score data originates from the gapminder dataset within Python’s plotly.express library, sourced from the Gapminder Foundation. This non-profit organization champions sustainable global development and the realization of United Nations Millennium Development Goals by advancing the use of data to enhance understanding of social, economic, and environmental progress.
+
+The suicide rate data is provided by the Organisation for Economic Co-operation and Development (OECD), a global institution comprising 38 member countries. The OECD drives evidence-based policies to foster prosperity, equality, and well-being, leveraging over six decades of data-driven insights and international collaboration.
