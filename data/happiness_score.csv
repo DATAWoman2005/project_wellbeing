@@ -1,0 +1,810 @@
+country,year,percent_happiness,country_code
+Afghanistan,2017,26.6,AFG
+Afghanistan,2018,26.9,AFG
+Afghanistan,2019,23.8,AFG
+Afghanistan,2021,24.4,AFG
+Afghanistan,2022,12.8,AFG
+Albania,2017,46.4,ALB
+Albania,2018,50.0,ALB
+Albania,2019,50.0,ALB
+Albania,2020,53.6,ALB
+Albania,2021,52.5,ALB
+Albania,2022,52.1,ALB
+Algeria,2017,52.5,DZA
+Algeria,2018,50.4,DZA
+Algeria,2019,47.5,DZA
+Algeria,2020,54.4,DZA
+Algeria,2021,52.2,DZA
+Algeria,2022,55.4,DZA
+Argentina,2017,60.4,ARG
+Argentina,2018,57.9,ARG
+Argentina,2019,60.9,ARG
+Argentina,2020,59.0,ARG
+Argentina,2021,59.1,ARG
+Argentina,2022,62.6,ARG
+Armenia,2017,42.9,ARM
+Armenia,2018,50.6,ARM
+Armenia,2019,54.9,ARM
+Armenia,2021,53.0,ARM
+Armenia,2022,53.8,ARM
+Australia,2017,72.6,AUS
+Australia,2018,71.8,AUS
+Australia,2019,72.3,AUS
+Australia,2020,71.4,AUS
+Australia,2021,71.1,AUS
+Australia,2022,70.3,AUS
+Austria,2017,72.9,AUT
+Austria,2018,74.0,AUT
+Austria,2019,72.0,AUT
+Austria,2020,72.1,AUT
+Austria,2021,70.8,AUT
+Austria,2022,70.0,AUT
+Azerbaijan,2017,51.5,AZE
+Azerbaijan,2018,51.7,AZE
+Azerbaijan,2019,51.7,AZE
+Azerbaijan,2022,45.8,AZE
+Bahrain,2017,62.3,BHR
+Bahrain,2019,71.0,BHR
+Bahrain,2020,61.7,BHR
+Bangladesh,2017,43.1,BGD
+Bangladesh,2018,45.0,BGD
+Bangladesh,2019,51.1,BGD
+Bangladesh,2020,52.8,BGD
+Bangladesh,2021,41.2,BGD
+Bangladesh,2022,34.1,BGD
+Belarus,2017,55.5,BLR
+Belarus,2018,52.3,BLR
+Belarus,2019,58.2,BLR
+Belgium,2017,69.3,BEL
+Belgium,2018,68.9,BEL
+Belgium,2019,67.7,BEL
+Belgium,2020,68.4,BEL
+Belgium,2021,68.8,BEL
+Belgium,2022,68.6,BEL
+Benin,2017,48.5,BEN
+Benin,2018,58.2,BEN
+Benin,2019,49.8,BEN
+Benin,2020,44.1,BEN
+Benin,2021,44.9,BEN
+Benin,2022,42.2,BEN
+Bolivia,2017,56.5,BOL
+Bolivia,2018,59.2,BOL
+Bolivia,2019,56.7,BOL
+Bolivia,2020,55.6,BOL
+Bolivia,2021,55.7,BOL
+Bolivia,2022,59.3,BOL
+Bosnia and Herzegovina,2017,50.9,BIH
+Bosnia and Herzegovina,2018,58.9,BIH
+Bosnia and Herzegovina,2019,60.2,BIH
+Bosnia and Herzegovina,2020,55.2,BIH
+Bosnia and Herzegovina,2021,57.5,BIH
+Bosnia and Herzegovina,2022,58.7,BIH
+Botswana,2017,35.0,BWA
+Botswana,2018,34.6,BWA
+Botswana,2019,34.7,BWA
+Botswana,2022,34.4,BWA
+Brazil,2017,63.3,BRA
+Brazil,2018,61.9,BRA
+Brazil,2019,64.5,BRA
+Brazil,2020,61.1,BRA
+Brazil,2021,60.1,BRA
+Brazil,2022,62.6,BRA
+Bulgaria,2017,51.0,BGR
+Bulgaria,2018,51.0,BGR
+Bulgaria,2019,51.1,BGR
+Bulgaria,2020,56.0,BGR
+Bulgaria,2021,54.2,BGR
+Bulgaria,2022,53.8,BGR
+Burkina Faso,2017,46.5,BFA
+Burkina Faso,2018,49.3,BFA
+Burkina Faso,2019,47.4,BFA
+Burkina Faso,2020,46.4,BFA
+Burkina Faso,2021,46.4,BFA
+Burundi,2018,37.8,BDI
+Cambodia,2017,45.9,KHM
+Cambodia,2018,51.2,KHM
+Cambodia,2019,50.0,KHM
+Cambodia,2020,43.8,KHM
+Cambodia,2021,45.5,KHM
+Cambodia,2022,42.5,KHM
+Cameroon,2017,50.7,CMR
+Cameroon,2018,52.5,CMR
+Cameroon,2019,49.4,CMR
+Cameroon,2020,52.4,CMR
+Cameroon,2021,49.6,CMR
+Cameroon,2022,47.1,CMR
+Canada,2017,74.2,CAN
+Canada,2018,71.8,CAN
+Canada,2019,71.1,CAN
+Canada,2020,70.3,CAN
+Canada,2021,69.4,CAN
+Canada,2022,69.2,CAN
+Central African Republic,2017,34.8,CAF
+Chad,2017,45.6,TCD
+Chad,2018,44.9,TCD
+Chad,2019,42.5,TCD
+Chad,2022,44.0,TCD
+Chile,2017,63.2,CHL
+Chile,2018,64.4,CHL
+Chile,2019,59.4,CHL
+Chile,2020,61.5,CHL
+Chile,2021,64.4,CHL
+Chile,2022,64.2,CHL
+China,2017,51.0,CHN
+China,2018,51.3,CHN
+China,2019,51.4,CHN
+China,2020,57.7,CHN
+China,2021,58.6,CHN
+Colombia,2017,61.6,COL
+Colombia,2018,59.8,COL
+Colombia,2019,63.5,COL
+Colombia,2020,57.1,COL
+Colombia,2021,52.9,COL
+Colombia,2022,58.9,COL
+Comoros,2018,39.7,COM
+Comoros,2019,46.1,COM
+Comoros,2022,35.5,COM
+"Congo, Dem. Rep.",2017,43.1,COD
+"Congo, Dem. Rep.",2022,32.1,COD
+"Congo, Rep.",2017,48.8,COG
+"Congo, Rep.",2018,54.9,COG
+"Congo, Rep.",2019,52.1,COG
+"Congo, Rep.",2020,50.8,COG
+"Congo, Rep.",2021,49.2,COG
+"Congo, Rep.",2022,58.0,COG
+Costa Rica,2017,72.3,CRI
+Costa Rica,2018,71.4,CRI
+Costa Rica,2019,70.0,CRI
+Costa Rica,2020,63.4,CRI
+Costa Rica,2021,64.1,CRI
+Costa Rica,2022,70.8,CRI
+Cote d'Ivoire,2017,50.4,CIV
+Cote d'Ivoire,2018,52.7,CIV
+Cote d'Ivoire,2019,53.9,CIV
+Cote d'Ivoire,2020,52.6,CIV
+Cote d'Ivoire,2021,50.6,CIV
+Cote d'Ivoire,2022,48.5,CIV
+Croatia,2017,53.4,HRV
+Croatia,2018,55.4,HRV
+Croatia,2019,56.3,HRV
+Croatia,2020,65.1,HRV
+Croatia,2021,62.9,HRV
+Croatia,2022,55.8,HRV
+Cyprus,2017,60.6,CYP
+Cyprus,2018,62.8,CYP
+Cyprus,2019,61.4,CYP
+Cyprus,2020,62.6,CYP
+Cyprus,2021,62.7,CYP
+Cyprus,2022,58.6,CYP
+Czech Republic,2017,67.9,CZE
+Czech Republic,2018,70.3,CZE
+Czech Republic,2020,69.0,CZE
+Czech Republic,2021,69.4,CZE
+Czech Republic,2022,67.0,CZE
+Denmark,2017,75.9,DNK
+Denmark,2018,76.5,DNK
+Denmark,2019,76.9,DNK
+Denmark,2020,75.2,DNK
+Denmark,2021,77.0,DNK
+Denmark,2022,75.5,DNK
+Dominican Republic,2017,56.0,DOM
+Dominican Republic,2018,54.3,DOM
+Dominican Republic,2019,60.0,DOM
+Dominican Republic,2020,51.7,DOM
+Dominican Republic,2021,60.3,DOM
+Dominican Republic,2022,55.2,DOM
+Ecuador,2017,58.4,ECU
+Ecuador,2018,61.3,ECU
+Ecuador,2019,58.1,ECU
+Ecuador,2020,53.5,ECU
+Ecuador,2021,54.4,ECU
+Ecuador,2022,58.9,ECU
+Egypt,2017,39.3,EGY
+Egypt,2018,40.0,EGY
+Egypt,2019,43.3,EGY
+Egypt,2020,44.7,EGY
+Egypt,2021,40.3,EGY
+Egypt,2022,40.2,EGY
+El Salvador,2017,63.4,SLV
+El Salvador,2018,62.4,SLV
+El Salvador,2019,64.5,SLV
+El Salvador,2020,54.6,SLV
+El Salvador,2021,64.3,SLV
+El Salvador,2022,64.9,SLV
+Estonia,2017,59.4,EST
+Estonia,2018,60.9,EST
+Estonia,2019,60.4,EST
+Estonia,2020,64.5,EST
+Estonia,2021,65.5,EST
+Estonia,2022,63.6,EST
+Eswatini,2018,42.1,SWZ
+Eswatini,2019,44.0,SWZ
+Eswatini,2022,35.0,SWZ
+Ethiopia,2017,41.8,ETH
+Ethiopia,2018,43.8,ETH
+Ethiopia,2019,41.0,ETH
+Ethiopia,2020,45.5,ETH
+Ethiopia,2022,36.3,ETH
+Finland,2017,77.9,FIN
+Finland,2018,78.6,FIN
+Finland,2019,77.8,FIN
+Finland,2020,78.9,FIN
+Finland,2021,77.9,FIN
+Finland,2022,77.3,FIN
+France,2017,66.3,FRA
+France,2018,66.7,FRA
+France,2019,66.9,FRA
+France,2020,67.1,FRA
+France,2021,66.6,FRA
+France,2022,66.1,FRA
+Gabon,2017,47.8,GAB
+Gabon,2018,47.8,GAB
+Gabon,2019,49.1,GAB
+Gabon,2020,48.9,GAB
+Gabon,2021,50.8,GAB
+Gabon,2022,51.4,GAB
+Gambia,2017,41.2,GMB
+Gambia,2018,49.2,GMB
+Gambia,2019,51.6,GMB
+Gambia,2022,42.8,GMB
+Georgia,2017,44.5,GEO
+Georgia,2018,46.6,GEO
+Georgia,2019,48.9,GEO
+Georgia,2020,51.2,GEO
+Georgia,2021,49.1,GEO
+Georgia,2022,52.9,GEO
+Germany,2017,70.7,DEU
+Germany,2018,71.2,DEU
+Germany,2019,70.3,DEU
+Germany,2020,73.1,DEU
+Germany,2021,67.5,DEU
+Germany,2022,66.1,DEU
+Ghana,2017,54.8,GHA
+Ghana,2018,50.0,GHA
+Ghana,2019,49.7,GHA
+Ghana,2020,53.2,GHA
+Ghana,2021,43.8,GHA
+Ghana,2022,41.9,GHA
+Greece,2017,51.5,GRC
+Greece,2018,54.1,GRC
+Greece,2019,59.5,GRC
+Greece,2020,57.9,GRC
+Greece,2021,61.0,GRC
+Greece,2022,59.0,GRC
+Guatemala,2017,63.3,GTM
+Guatemala,2018,66.3,GTM
+Guatemala,2019,62.6,GTM
+Guatemala,2022,61.5,GTM
+Guinea,2017,48.7,GIN
+Guinea,2018,52.5,GIN
+Guinea,2019,47.7,GIN
+Guinea,2020,49.7,GIN
+Guinea,2021,49.5,GIN
+Guinea,2022,53.2,GIN
+Haiti,2017,38.2,HTI
+Haiti,2018,36.1,HTI
+Honduras,2017,60.2,HND
+Honduras,2018,59.1,HND
+Honduras,2019,59.3,HND
+Honduras,2021,61.1,HND
+Honduras,2022,59.3,HND
+"Hong Kong, China",2017,53.6,HKG
+"Hong Kong, China",2019,56.6,HKG
+"Hong Kong, China",2020,53.0,HKG
+"Hong Kong, China",2021,53.2,HKG
+"Hong Kong, China",2022,53.1,HKG
+Hungary,2017,60.6,HUN
+Hungary,2018,59.4,HUN
+Hungary,2019,60.0,HUN
+Hungary,2020,60.4,HUN
+Hungary,2021,62.3,HUN
+Hungary,2022,58.6,HUN
+Iceland,2017,74.8,ISL
+Iceland,2019,75.3,ISL
+Iceland,2020,75.8,ISL
+Iceland,2021,75.7,ISL
+Iceland,2022,74.5,ISL
+India,2017,40.5,IND
+India,2018,38.2,IND
+India,2019,32.5,IND
+India,2020,42.2,IND
+India,2021,35.6,IND
+India,2022,39.3,IND
+Indonesia,2017,51.0,IDN
+Indonesia,2018,53.4,IDN
+Indonesia,2019,53.5,IDN
+Indonesia,2020,48.3,IDN
+Indonesia,2021,54.3,IDN
+Indonesia,2022,55.9,IDN
+Iran,2017,47.2,IRN
+Iran,2018,42.8,IRN
+Iran,2019,50.1,IRN
+Iran,2020,48.6,IRN
+Iran,2021,47.9,IRN
+Iran,2022,49.8,IRN
+Iraq,2017,44.6,IRQ
+Iraq,2018,48.9,IRQ
+Iraq,2020,47.9,IRQ
+Iraq,2021,50.9,IRQ
+Iraq,2022,49.3,IRQ
+Ireland,2017,70.6,IRL
+Ireland,2018,69.6,IRL
+Ireland,2019,72.5,IRL
+Ireland,2020,70.3,IRL
+Ireland,2021,68.3,IRL
+Ireland,2022,68.7,IRL
+Israel,2017,73.3,ISR
+Israel,2018,69.3,ISR
+Israel,2019,73.3,ISR
+Israel,2020,72.0,ISR
+Israel,2021,75.8,ISR
+Israel,2022,76.6,ISR
+Italy,2017,62.0,ITA
+Italy,2018,65.2,ITA
+Italy,2019,64.5,ITA
+Italy,2020,64.9,ITA
+Italy,2021,64.7,ITA
+Italy,2022,62.6,ITA
+Jamaica,2017,58.9,JAM
+Jamaica,2019,63.1,JAM
+Jamaica,2020,54.3,JAM
+Jamaica,2021,58.1,JAM
+Jamaica,2022,58.7,JAM
+Japan,2017,59.1,JPN
+Japan,2018,57.9,JPN
+Japan,2019,59.1,JPN
+Japan,2020,61.2,JPN
+Japan,2021,60.9,JPN
+Japan,2022,61.8,JPN
+Jordan,2017,48.1,JOR
+Jordan,2018,46.4,JOR
+Jordan,2019,44.5,JOR
+Jordan,2020,40.9,JOR
+Jordan,2021,39.1,JOR
+Jordan,2022,43.6,JOR
+Kazakhstan,2017,58.8,KAZ
+Kazakhstan,2018,60.1,KAZ
+Kazakhstan,2019,62.7,KAZ
+Kazakhstan,2020,61.7,KAZ
+Kazakhstan,2021,62.6,KAZ
+Kazakhstan,2022,60.1,KAZ
+Kenya,2017,44.8,KEN
+Kenya,2018,46.6,KEN
+Kenya,2019,46.2,KEN
+Kenya,2020,45.5,KEN
+Kenya,2021,44.6,KEN
+Kenya,2022,44.5,KEN
+Kosovo,2017,61.5,XKX
+Kosovo,2018,63.9,XKX
+Kosovo,2019,64.3,XKX
+Kosovo,2020,62.9,XKX
+Kosovo,2021,66.5,XKX
+Kosovo,2022,61.6,XKX
+Kuwait,2017,60.9,KWT
+Kuwait,2019,61.1,KWT
+Kuwait,2022,67.6,KWT
+Kyrgyz Republic,2017,56.3,KGZ
+Kyrgyz Republic,2018,53.0,KGZ
+Kyrgyz Republic,2019,56.9,KGZ
+Kyrgyz Republic,2020,62.5,KGZ
+Kyrgyz Republic,2021,55.6,KGZ
+Kyrgyz Republic,2022,56.7,KGZ
+Lao,2017,46.2,LAO
+Lao,2018,48.6,LAO
+Lao,2019,52.0,LAO
+Lao,2020,52.8,LAO
+Lao,2021,49.3,LAO
+Lao,2022,49.6,LAO
+Latvia,2017,59.8,LVA
+Latvia,2018,59.0,LVA
+Latvia,2019,59.7,LVA
+Latvia,2020,62.3,LVA
+Latvia,2021,63.5,LVA
+Latvia,2022,60.5,LVA
+Lebanon,2017,51.5,LBN
+Lebanon,2018,51.7,LBN
+Lebanon,2019,40.2,LBN
+Lebanon,2020,26.3,LBN
+Lebanon,2021,21.8,LBN
+Lebanon,2022,23.5,LBN
+Lesotho,2017,38.0,LSO
+Lesotho,2019,35.1,LSO
+Lesotho,2022,31.9,LSO
+Liberia,2017,44.2,LBR
+Liberia,2018,41.4,LBR
+Liberia,2019,51.2,LBR
+Liberia,2022,40.4,LBR
+Libya,2017,56.5,LBY
+Libya,2018,54.9,LBY
+Libya,2019,53.3,LBY
+Libya,2022,57.6,LBY
+Lithuania,2017,62.7,LTU
+Lithuania,2018,63.1,LTU
+Lithuania,2019,60.6,LTU
+Lithuania,2020,63.9,LTU
+Lithuania,2021,68.7,LTU
+Lithuania,2022,70.4,LTU
+Luxembourg,2017,70.6,LUX
+Luxembourg,2018,72.4,LUX
+Luxembourg,2019,74.0,LUX
+Luxembourg,2022,72.3,LUX
+Madagascar,2017,40.8,MDG
+Madagascar,2018,40.7,MDG
+Madagascar,2019,43.4,MDG
+Madagascar,2022,40.2,MDG
+Malawi,2017,34.2,MWI
+Malawi,2018,33.4,MWI
+Malawi,2019,38.7,MWI
+Malawi,2021,36.4,MWI
+Malawi,2022,33.6,MWI
+Malaysia,2018,53.4,MYS
+Malaysia,2019,54.3,MYS
+Malaysia,2020,60.1,MYS
+Malaysia,2021,60.1,MYS
+Malaysia,2022,60.5,MYS
+Maldives,2018,52.0,MDV
+Mali,2017,47.4,MLI
+Mali,2018,44.2,MLI
+Mali,2019,49.9,MLI
+Mali,2020,42.7,MLI
+Mali,2021,41.1,MLI
+Mali,2022,42.1,MLI
+Malta,2017,66.8,MLT
+Malta,2018,69.1,MLT
+Malta,2019,67.3,MLT
+Malta,2020,61.6,MLT
+Malta,2021,64.4,MLT
+Malta,2022,63.0,MLT
+Mauritania,2017,46.8,MRT
+Mauritania,2018,43.1,MRT
+Mauritania,2019,41.5,MRT
+Mauritania,2022,47.2,MRT
+Mauritius,2017,61.7,MUS
+Mauritius,2018,58.8,MUS
+Mauritius,2019,62.4,MUS
+Mauritius,2020,60.1,MUS
+Mauritius,2021,59.5,MUS
+Mauritius,2022,57.4,MUS
+Mexico,2017,64.1,MEX
+Mexico,2018,65.5,MEX
+Mexico,2019,64.3,MEX
+Mexico,2020,59.6,MEX
+Mexico,2021,59.9,MEX
+Mexico,2022,70.4,MEX
+Moldova,2017,53.3,MDA
+Moldova,2018,56.8,MDA
+Moldova,2019,58.0,MDA
+Moldova,2020,58.1,MDA
+Moldova,2021,59.6,MDA
+Moldova,2022,56.9,MDA
+Mongolia,2017,53.3,MNG
+Mongolia,2018,54.6,MNG
+Mongolia,2019,55.6,MNG
+Mongolia,2020,60.1,MNG
+Mongolia,2021,57.2,MNG
+Mongolia,2022,57.9,MNG
+Montenegro,2017,56.1,MNE
+Montenegro,2018,56.5,MNE
+Montenegro,2019,53.9,MNE
+Montenegro,2020,57.2,MNE
+Montenegro,2022,56.0,MNE
+Morocco,2017,53.1,MAR
+Morocco,2018,49.0,MAR
+Morocco,2019,50.6,MAR
+Morocco,2020,48.0,MAR
+Morocco,2021,53.3,MAR
+Morocco,2022,46.0,MAR
+Mozambique,2017,42.8,MOZ
+Mozambique,2018,46.5,MOZ
+Mozambique,2019,49.3,MOZ
+Mozambique,2021,51.8,MOZ
+Mozambique,2022,47.4,MOZ
+Myanmar,2017,41.5,MMR
+Myanmar,2018,44.1,MMR
+Myanmar,2019,44.3,MMR
+Myanmar,2020,44.3,MMR
+Myanmar,2021,43.1,MMR
+Myanmar,2022,43.6,MMR
+Namibia,2017,44.4,NAM
+Namibia,2018,48.3,NAM
+Namibia,2019,44.4,NAM
+Namibia,2020,44.5,NAM
+Namibia,2021,44.9,NAM
+Namibia,2022,49.5,NAM
+Nepal,2017,47.4,NPL
+Nepal,2018,49.1,NPL
+Nepal,2019,54.5,NPL
+Nepal,2020,59.8,NPL
+Nepal,2021,46.2,NPL
+Nepal,2022,54.7,NPL
+Netherlands,2017,74.6,NLD
+Netherlands,2018,74.6,NLD
+Netherlands,2019,74.3,NLD
+Netherlands,2020,75.0,NLD
+Netherlands,2021,73.1,NLD
+Netherlands,2022,73.9,NLD
+New Zealand,2017,73.3,NZL
+New Zealand,2018,73.7,NZL
+New Zealand,2019,72.0,NZL
+New Zealand,2020,72.6,NZL
+New Zealand,2021,71.4,NZL
+New Zealand,2022,69.8,NZL
+Nicaragua,2017,64.8,NIC
+Nicaragua,2018,58.2,NIC
+Nicaragua,2019,61.1,NIC
+Nicaragua,2020,62.9,NIC
+Nicaragua,2021,61.0,NIC
+Nicaragua,2022,63.9,NIC
+Niger,2017,46.2,NER
+Niger,2018,51.6,NER
+Niger,2019,50.0,NER
+Niger,2022,45.0,NER
+Nigeria,2017,53.2,NGA
+Nigeria,2018,52.5,NGA
+Nigeria,2019,42.7,NGA
+Nigeria,2020,55.0,NGA
+Nigeria,2021,44.8,NGA
+Nigeria,2022,52.9,NGA
+North Macedonia,2017,52.3,MKD
+North Macedonia,2018,52.4,MKD
+North Macedonia,2019,50.1,MKD
+North Macedonia,2020,50.5,MKD
+North Macedonia,2021,55.4,MKD
+North Macedonia,2022,51.7,MKD
+Norway,2017,75.8,NOR
+Norway,2018,74.4,NOR
+Norway,2019,74.4,NOR
+Norway,2020,72.9,NOR
+Norway,2021,73.6,NOR
+Norway,2022,73.0,NOR
+Pakistan,2017,58.3,PAK
+Pakistan,2018,54.7,PAK
+Pakistan,2019,44.4,PAK
+Pakistan,2020,46.2,PAK
+Pakistan,2021,44.9,PAK
+Pakistan,2022,49.3,PAK
+Palestine,2017,46.3,PSE
+Palestine,2018,45.5,PSE
+Palestine,2019,44.8,PSE
+Palestine,2022,49.1,PSE
+Panama,2017,65.7,PAN
+Panama,2018,62.8,PAN
+Panama,2019,60.9,PAN
+Panama,2021,65.5,PAN
+Panama,2022,59.8,PAN
+Paraguay,2017,57.1,PRY
+Paraguay,2019,56.5,PRY
+Paraguay,2020,55.0,PRY
+Paraguay,2021,55.8,PRY
+Paraguay,2022,61.4,PRY
+Peru,2017,57.1,PER
+Peru,2018,56.8,PER
+Peru,2019,60.0,PER
+Peru,2020,49.9,PER
+Peru,2021,56.9,PER
+Peru,2022,58.9,PER
+Philippines,2017,55.9,PHL
+Philippines,2018,58.7,PHL
+Philippines,2019,62.7,PHL
+Philippines,2020,50.8,PHL
+Philippines,2021,59.6,PHL
+Philippines,2022,60.0,PHL
+Poland,2017,62.0,POL
+Poland,2018,61.1,POL
+Poland,2019,62.4,POL
+Poland,2020,61.4,POL
+Poland,2021,59.8,POL
+Poland,2022,66.7,POL
+Portugal,2017,57.1,PRT
+Portugal,2018,59.2,PRT
+Portugal,2019,61.0,PRT
+Portugal,2020,57.7,PRT
+Portugal,2021,61.8,PRT
+Portugal,2022,59.5,PRT
+Romania,2017,60.9,ROU
+Romania,2018,61.5,ROU
+Romania,2019,61.3,ROU
+Romania,2020,67.8,ROU
+Romania,2021,65.5,ROU
+Romania,2022,64.4,ROU
+Russia,2017,55.8,RUS
+Russia,2018,55.1,RUS
+Russia,2019,54.4,RUS
+Russia,2020,55.0,RUS
+Russia,2021,54.5,RUS
+Russia,2022,60.4,RUS
+Rwanda,2017,31.1,RWA
+Rwanda,2018,35.6,RWA
+Rwanda,2019,32.7,RWA
+Saudi Arabia,2017,62.9,SAU
+Saudi Arabia,2018,63.6,SAU
+Saudi Arabia,2019,65.6,SAU
+Saudi Arabia,2020,65.6,SAU
+Saudi Arabia,2021,64.5,SAU
+Saudi Arabia,2022,63.8,SAU
+Senegal,2017,46.8,SEN
+Senegal,2018,47.7,SEN
+Senegal,2019,54.9,SEN
+Senegal,2020,47.6,SEN
+Senegal,2021,49.0,SEN
+Senegal,2022,49.1,SEN
+Serbia,2017,51.2,SRB
+Serbia,2018,59.4,SRB
+Serbia,2019,62.4,SRB
+Serbia,2020,60.4,SRB
+Serbia,2021,62.5,SRB
+Serbia,2022,65.5,SRB
+Sierra Leone,2017,40.9,SLE
+Sierra Leone,2018,43.1,SLE
+Sierra Leone,2019,34.5,SLE
+Sierra Leone,2021,37.1,SLE
+Sierra Leone,2022,25.6,SLE
+Singapore,2017,63.8,SGP
+Singapore,2018,63.8,SGP
+Singapore,2019,63.8,SGP
+Singapore,2021,65.9,SGP
+Singapore,2022,63.3,SGP
+Slovak Republic,2017,63.7,SVK
+Slovak Republic,2018,62.4,SVK
+Slovak Republic,2019,62.4,SVK
+Slovak Republic,2020,65.2,SVK
+Slovak Republic,2021,64.2,SVK
+Slovak Republic,2022,60.9,SVK
+Slovenia,2017,61.7,SVN
+Slovenia,2018,62.5,SVN
+Slovenia,2019,66.7,SVN
+Slovenia,2020,64.6,SVN
+Slovenia,2021,67.6,SVN
+Slovenia,2022,67.2,SVN
+South Africa,2017,45.1,ZAF
+South Africa,2018,48.8,ZAF
+South Africa,2019,50.4,ZAF
+South Africa,2020,49.5,ZAF
+South Africa,2021,56.0,ZAF
+South Africa,2022,55.8,ZAF
+South Korea,2017,58.7,KOR
+South Korea,2018,58.4,KOR
+South Korea,2019,59.0,KOR
+South Korea,2020,57.9,KOR
+South Korea,2021,61.1,KOR
+South Korea,2022,59.5,KOR
+South Sudan,2017,28.2,SSD
+Spain,2017,62.3,ESP
+Spain,2018,65.1,ESP
+Spain,2019,64.6,ESP
+Spain,2020,65.0,ESP
+Spain,2021,64.7,ESP
+Spain,2022,63.4,ESP
+Sri Lanka,2017,43.3,LKA
+Sri Lanka,2018,44.4,LKA
+Sri Lanka,2019,42.1,LKA
+Sri Lanka,2020,47.8,LKA
+Sri Lanka,2021,41.0,LKA
+Sri Lanka,2022,39.9,LKA
+Sweden,2017,72.9,SWE
+Sweden,2018,73.8,SWE
+Sweden,2019,74.0,SWE
+Sweden,2020,73.1,SWE
+Sweden,2021,74.4,SWE
+Sweden,2022,74.3,SWE
+Switzerland,2017,74.7,CHE
+Switzerland,2018,75.1,CHE
+Switzerland,2019,76.9,CHE
+Switzerland,2020,75.1,CHE
+Switzerland,2021,73.3,CHE
+Switzerland,2022,68.8,CHE
+Taiwan,2017,63.6,TWN
+Taiwan,2018,64.7,TWN
+Taiwan,2019,65.4,TWN
+Taiwan,2020,67.5,TWN
+Taiwan,2021,62.5,TWN
+Taiwan,2022,66.1,TWN
+Tajikistan,2017,58.3,TJK
+Tajikistan,2018,55.0,TJK
+Tajikistan,2019,54.6,TJK
+Tajikistan,2020,53.7,TJK
+Tajikistan,2021,52.9,TJK
+Tajikistan,2022,51.8,TJK
+Tanzania,2017,33.5,TZA
+Tanzania,2018,34.5,TZA
+Tanzania,2019,36.4,TZA
+Tanzania,2020,37.9,TZA
+Tanzania,2021,36.8,TZA
+Tanzania,2022,36.2,TZA
+Thailand,2017,59.4,THA
+Thailand,2018,60.1,THA
+Thailand,2019,60.2,THA
+Thailand,2020,58.9,THA
+Thailand,2021,56.4,THA
+Thailand,2022,60.1,THA
+Togo,2017,43.6,TGO
+Togo,2018,40.2,TGO
+Togo,2019,41.8,TGO
+Togo,2021,40.4,TGO
+Togo,2022,42.4,TGO
+Trinidad and Tobago,2017,61.9,TTO
+Tunisia,2017,41.2,TUN
+Tunisia,2018,47.4,TUN
+Tunisia,2019,43.1,TUN
+Tunisia,2020,47.3,TUN
+Tunisia,2021,45.0,TUN
+Tunisia,2022,42.6,TUN
+Turkey,2017,56.1,TUR
+Turkey,2018,51.9,TUR
+Turkey,2019,48.7,TUR
+Turkey,2020,48.6,TUR
+Turkey,2021,43.7,TUR
+Turkey,2022,50.9,TUR
+Turkmenistan,2017,52.3,TKM
+Turkmenistan,2018,46.2,TKM
+Turkmenistan,2019,54.7,TKM
+United Arab Emirates,2017,70.4,ARE
+United Arab Emirates,2018,66.0,ARE
+United Arab Emirates,2019,67.1,ARE
+United Arab Emirates,2020,64.6,ARE
+United Arab Emirates,2021,67.3,ARE
+United Arab Emirates,2022,67.4,ARE
+UK,2017,71.0,GBR
+UK,2018,72.3,GBR
+UK,2019,71.6,GBR
+UK,2020,68.0,GBR
+UK,2021,68.7,GBR
+UK,2022,67.2,GBR
+USA,2017,69.9,USA
+USA,2018,68.8,USA
+USA,2019,69.4,USA
+USA,2020,70.3,USA
+USA,2021,69.6,USA
+USA,2022,66.9,USA
+Uganda,2017,40.0,UGA
+Uganda,2018,43.2,UGA
+Uganda,2019,49.5,UGA
+Uganda,2020,46.4,UGA
+Uganda,2021,42.3,UGA
+Uganda,2022,44.3,UGA
+Ukraine,2017,43.1,UKR
+Ukraine,2018,46.6,UKR
+Ukraine,2019,47.0,UKR
+Ukraine,2020,52.7,UKR
+Ukraine,2021,53.1,UKR
+Ukraine,2022,46.4,UKR
+Uruguay,2017,63.4,URY
+Uruguay,2018,63.7,URY
+Uruguay,2019,66.0,URY
+Uruguay,2020,63.1,URY
+Uruguay,2021,65.0,URY
+Uruguay,2022,66.7,URY
+Uzbekistan,2017,64.2,UZB
+Uzbekistan,2018,62.0,UZB
+Uzbekistan,2019,61.5,UZB
+Uzbekistan,2020,58.4,UZB
+Uzbekistan,2021,61.9,UZB
+Uzbekistan,2022,60.2,UZB
+Venezuela,2017,50.7,VEN
+Venezuela,2018,50.1,VEN
+Venezuela,2019,50.8,VEN
+Venezuela,2020,45.7,VEN
+Venezuela,2021,51.1,VEN
+Venezuela,2022,59.5,VEN
+Vietnam,2017,51.8,VNM
+Vietnam,2018,53.0,VNM
+Vietnam,2019,54.7,VNM
+Vietnam,2020,54.6,VNM
+Vietnam,2021,55.4,VNM
+Vietnam,2022,62.7,VNM
+Yemen,2017,32.5,YEM
+Yemen,2018,30.6,YEM
+Yemen,2019,42.0,YEM
+Yemen,2022,35.9,YEM
+Zambia,2017,39.3,ZMB
+Zambia,2018,40.4,ZMB
+Zambia,2019,33.1,ZMB
+Zambia,2020,48.4,ZMB
+Zambia,2021,30.8,ZMB
+Zambia,2022,37.3,ZMB
+Zimbabwe,2017,36.4,ZWE
+Zimbabwe,2018,36.2,ZWE
+Zimbabwe,2019,26.9,ZWE
+Zimbabwe,2020,31.6,ZWE
+Zimbabwe,2021,31.6,ZWE
+Zimbabwe,2022,33.0,ZWE
